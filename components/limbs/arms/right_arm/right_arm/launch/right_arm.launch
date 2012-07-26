@@ -27,14 +27,14 @@
     <!-- Load joint controller configuration from YAML file to parameter server -->
     <rosparam ns="$(arg dynamixel_namespace)" file="$(find right_arm)/params/right_arm_params.yaml" command="load"/>
 
-   <!-- Start the head pan and tilt controllers -->
+   <!-- Start the pan and tilt controllers -->
    <node ns="$(arg dynamixel_namespace)" name="dynamixel_controller_spawner_ax12" pkg="dynamixel_controllers"
    type="controller_spawner.py"
         args="--manager=maggie_dynamixel_manager
               --port=dynamixel_ax12
               --type=simple
-        head_pan_controller
-        head_tilt_controller
+        elbow_tilt_controller
+        forearm_roll_controller
 	shoulder_pan_controller
 	shoulder_tilt_controller
 	upper_arm_roll_controller"

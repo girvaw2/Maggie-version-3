@@ -1,26 +1,26 @@
-dynamixels: ['head_pan_joint', 'head_tilt_joint', 'shoulder_pan_joint', 'shoulder_tilt_joint', 'upper_arm_roll_joint']
+dynamixels: ['elbow_tilt_joint', 'forearm_roll_joint', 'shoulder_pan_joint', 'shoulder_tilt_joint', 'upper_arm_roll_joint']
 
-head_pan_controller:
+elbow_tilt_controller:
     controller:
         package: dynamixel_controllers
         module: joint_position_controller
         type: JointPositionController
-    joint_name: head_pan_joint
-    joint_speed: 0.5 
-    joint_max_speed: 1
+    joint_name: elbow_tilt_joint
+    joint_speed: 2.0 
+    joint_max_speed: 2.0 
     motor:
         id: 1
-        init: 512
-        min: 100
-        max: 1000
+        init: 0 
+        min:  0 
+        max: 1023
 
-head_tilt_controller:
+forearm_roll_controller:
     controller:
         package: dynamixel_controllers
         module: joint_position_controller
         type: JointPositionController
-    joint_name: head_tilt_joint
-    joint_speed: 0.5 
+    joint_name: forearm_roll_joint
+    joint_speed: 2.0 
     joint_max_speed: 1
     motor:
         id: 2
