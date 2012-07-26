@@ -1,0 +1,19 @@
+<package>
+  <description brief="ax12_set_id">
+
+     ax12_set_id
+
+  </description>
+  <author>billy</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/ax12_set_id</url>
+  <depend package="roscpp"/>
+  <depend package="rospy"/>
+  <depend package="dynamixel_driver"/>
+  <depend package="dynamixel_controllers"/>
+  <depend package="dynamixel_msgs"/>
+  <rosdep name="wxpython"/>
+</package>
+
+

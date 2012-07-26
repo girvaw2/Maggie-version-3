@@ -1,0 +1,2 @@
+Set the ID of the AX12 dynamixel servo
+Set the old and new IDs accordingly in set_id.py.
