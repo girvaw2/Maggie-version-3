@@ -1,0 +1,6 @@
+<launch>
+
+<node name="dynamic_reconfigure_load" pkg="dynamic_reconfigure" type="dynparam" args="load /camera/driver $(find maggie_head_movement)/params/test.yaml" />	  
+
+</launch>
+
