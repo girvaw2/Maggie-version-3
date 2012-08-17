@@ -27,6 +27,6 @@ if __name__=='__main__':
   set_id = Relax()
   set_id.connect()
   
-  ' set the old and new servo IDs:
-  '
-  set_id.set_id(1, 2)
+  """ set the old and new servo IDs
+  """
+  set_id.set_id(2, 6) 

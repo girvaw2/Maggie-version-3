@@ -2,7 +2,8 @@
 	<arg name="dynamixel_namespace" value="dynamixel_controller" />
 	
     <!-- Load the URDF/Xacro model of our robot -->
-	<param name="robot_description" command="$(find xacro)/xacro.py '$(find maggie_head_movement)/urdf/maggie.urdf.xacro'" />
+	<!--param name="robot_description" command="$(find xacro)/xacro.py '$(find maggie_head_movement)/urdf/maggie.urdf.xacro'" /-->
+	<param name="robot_description" command="$(find xacro)/xacro.py '$(find maggie_model)/urdf/maggie.xacro'" />
 
     <!-- Publish the robot state -->
 	<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">

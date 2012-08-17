@@ -8,6 +8,13 @@
 #include "llist.h"
 #endif
 
+/*
+ * Instruction codes
+ */
+#define PING           0x01
+#define READ_DATA      0x02  
+#define WRITE_DATA     0x03
+
 #define SHOULDER_PAN_MOTOR    3
 #define SHOULDER_TILT_MOTOR   4
 #define UPPER_ARM_ROLL_MOTOR  5

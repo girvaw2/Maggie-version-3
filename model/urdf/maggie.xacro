@@ -5,11 +5,10 @@
        xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
        xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
        xmlns:xacro="http://ros.org/wiki/xacro" 
-	   name="pi_robot">
+	   name="maggie">
 
-	<!--
-	<include filename="$(find pi_robot_description)/urdf/sensors/hokuyo_laser_gazebo.xacro" />
-	-->
+	<include filename="$(find pr2_description)/urdf/materials.urdf.xacro" />
+	<include filename="$(find pr2_description)/urdf/gripper_v0/gripper.urdf.xacro" />
 	
 	<xacro:macro name="white">
 		<material name="white">
@@ -99,7 +98,6 @@
         <xacro:default_gazebo name="${name}" material="${material}" />
 	</xacro:macro>
 	
-    
     <xacro:macro name="default_gazebo" params="name material">
  		<gazebo reference="${name}">
 			<material>${material}</material>
@@ -147,8 +145,26 @@
 	</xacro:my_box>
 	
 	<xacro:my_cylinder name="forearm_link" l="0.27" r="0.025" xyz="0.135 0 0" rpy="0 1.57 0" mass="0.5" material="Gazebo/WhiteEmissive">
-		<xacro:red1 />
+		<xacro:grey1 />
 	</xacro:my_cylinder>
+	
+	<xacro:my_box name="wrist_tilt_link" lwh="0.03 0.003 0.03" xyz="0.015 0 0" rpy="0 0 0" mass="0.5" material="Gazebo/WhiteEmissive">
+		<xacro:blue1 />
+	</xacro:my_box>
+	
+	<xacro:pr2_gripper_v0 reflect="-1.0" side="r" parent="wrist_tilt_link"
+               screw_reduction="${4.0/1000.0}"
+               gear_ratio="${(729.0/25.0)*(22.0/16.0)}"
+               theta0="${3.6029*M_PI/180.0}"
+               phi0="${29.7089*M_PI/180.0}"
+               t0="${-0.1914/1000.0}"
+               L0="${37.5528/1000.0}"
+               h="${0.0/1000.0}"
+               a="${68.3698/1000.0}"
+               b="${43.3849/1000.0}"
+               r="${91.5/1000.0}" >
+	<origin xyz="0 0 0" rpy="0 0 0" />
+      </xacro:pr2_gripper_v0>
 	
 	
 	<!-- head links -->
@@ -256,6 +272,14 @@
 
 	
 	<!-- arm joints -->
+	<joint name="wrist_tilt_joint" type="revolute">
+	  <parent link="forearm_link" />
+	  <child link="wrist_tilt_link" />
+	  <axis xyz="0 1 0"/>
+	  <origin xyz="0.255 0 0" rpy="0 0 0" />
+	  <limit lower="-1.0" upper="1.0" effort="1.0" velocity="1.0" />
+	</joint>
+	
 	<joint name="forearm_roll_joint" type="revolute">
 	  <parent link="elbow_tilt_link" />
 	  <child link="forearm_link" />

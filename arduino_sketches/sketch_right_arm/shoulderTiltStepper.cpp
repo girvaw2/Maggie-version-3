@@ -1,12 +1,5 @@
 #include "shoulderTiltStepper.h"
 
-/*
- * Instruction codes
- */
-#define PING           0x01
-#define READ_DATA      0x02  
-
-//extern void shoulderPanLimitReached();
 extern void shoulderTiltLimitReached();
 
 ShoulderTiltStepper::ShoulderTiltStepper(byte ID) : Stepper (ID)
@@ -116,6 +109,13 @@ void ShoulderTiltStepper::setResponsePacket()
        initResponsePacket();
        addResponsePacketParameters();
        responsePacket.push_back(calcCheckSum());
+       break;
+     
+     case WRITE_DATA:
+       outLength = 0x02;
+       initResponsePacket();
+       responsePacket.push_back(calcCheckSum());
+       break;
   }
 }
 
@@ -135,6 +135,12 @@ void ShoulderTiltStepper::addResponsePacketParameters()
       case firmwareVersion:
         responsePacket.push_back(0x01);
         break;
+      case uniqueID:
+        responsePacket.push_back(SHOULDER_TILT_MOTOR);
+        break;
+      case baudRate:
+        responsePacket.push_back(0x01); // 1000000
+        break;
       case returnDelayTime:
         responsePacket.push_back(0xFA);
         break;
@@ -150,11 +156,59 @@ void ShoulderTiltStepper::addResponsePacketParameters()
       case ccwAngleLimit_H:
         responsePacket.push_back(0x03);
         break;
+      case limitTemperature_H:
+        responsePacket.push_back(0x55);
+        break;
       case limitVoltage_L:
         responsePacket.push_back(0x3C);
         break;
       case limitVoltage_H:
         responsePacket.push_back(0xBE);
+        break;
+      case maxTorque_L:
+        responsePacket.push_back(0xFF);
+        break;
+      case maxTorque_H:
+        responsePacket.push_back(0x03);
+        break;
+      case statusReturnLevel:
+        responsePacket.push_back(0x02);
+        break;
+      case alarmLED:
+        responsePacket.push_back(0x04);
+        break;
+      case alarmShutdown:
+        responsePacket.push_back(0x04);
+        break;
+      case downCalibration_L:
+        responsePacket.push_back(0x00);
+        break;
+      case downCalibration_H:
+        responsePacket.push_back(0x00);
+        break;
+      case upCalibration_L:
+        responsePacket.push_back(0x00);
+        break;
+      case upCalibration_H:
+        responsePacket.push_back(0x00);
+        break;
+      case torqueEnable:
+        responsePacket.push_back(0x00);
+        break;
+      case LED:
+        responsePacket.push_back(0x00);
+        break;
+      case cwComplianceMargin:
+        responsePacket.push_back(0x00);
+        break;
+      case ccwComplianceMargin:
+        responsePacket.push_back(0x00);
+        break;
+      case cwComplianceSlope:
+        responsePacket.push_back(0x20);
+        break;
+      case ccwComplianceSlope:
+        responsePacket.push_back(0x20);
         break;
       case goalPosition_L:
         responsePacket.push_back(goalPosition % 256);
@@ -209,6 +263,7 @@ void ShoulderTiltStepper::addResponsePacketParameters()
         break;
         
       default:
+        responsePacket.push_back(0x00);
         break;
     }
   }
@@ -316,8 +371,8 @@ void ShoulderTiltStepper::enableTimer()
      * A precaler or 64 & a OCRF3A count of 250 equates to an angular velocity of approximately 1 rad/s
      */
     TCCR4A = 0; // set entire TCCR4A register to 0
-    //OCR4A = 500; // 4 ms pulse
-    OCR4A = 250; // 2 ms pulse
+    OCR4A = 1000; // 8 ms pulse
+    //OCR4A = 250; // 2 ms pulse
     TCCR4B = 0x0B; // start timer, 64 x prescaler, CTC mode.
     bitWrite(TIMSK4, OCIE4A, 1); // Enable timer 4 OC interrupt A
 }

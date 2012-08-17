@@ -1,10 +1,10 @@
 #include "stepper.h"
 
-/*
- * Instruction codes
- */
-#define PING           0x01
-#define READ_DATA      0x02  
+///*
+// * Instruction codes
+// */
+//#define PING           0x01
+//#define READ_DATA      0x02  
 
 extern void shoulderPanLimitReached();
 extern void shoulderTiltLimitReached();

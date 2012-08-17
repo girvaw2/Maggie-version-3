@@ -1,7 +1,0 @@
-<launch>
-
-<include file="$(find maggie_head_movement)/launch/dynamixels.launch"/>
-
-</launch>
-
-

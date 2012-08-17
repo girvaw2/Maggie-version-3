@@ -13,10 +13,6 @@
 #include "llist.h"
 #endif
 
-#define SHOULDER_PAN_MOTOR    3
-#define SHOULDER_TILT_MOTOR   4
-#define UPPER_ARM_ROLL_MOTOR  5
-
 class ShoulderTiltStepper : public Stepper
 {
 public:
@@ -72,17 +68,34 @@ private: // variables
     modelNumber_L = 0,
     modelNumber_H,
     firmwareVersion,
-    //...
-    returnDelayTime = 5,
+    uniqueID,
+    baudRate,  
+    returnDelayTime, // 5
     cwAngleLimit_L,
     cwAngleLimit_H,
     ccwAngleLimit_L,
     ccwAngleLimit_H,
-    //...
-    limitVoltage_L = 12,
+    // reserved
+    limitTemperature_H = 11,
+    limitVoltage_L,
     limitVoltage_H,
-    //...
-    goalPosition_L = 30,
+    maxTorque_L,
+    maxTorque_H,
+    statusReturnLevel,
+    alarmLED,
+    alarmShutdown,
+    // reserved
+    downCalibration_L = 20,
+    downCalibration_H,
+    upCalibration_L,
+    upCalibration_H,
+    torqueEnable,
+    LED,
+    cwComplianceMargin,
+    ccwComplianceMargin,
+    cwComplianceSlope,
+    ccwComplianceSlope,
+    goalPosition_L, // 30,
     goalPosition_H,
     movingSpeed_L,
     movingSpeed_H,

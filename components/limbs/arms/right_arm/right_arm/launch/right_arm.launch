@@ -2,7 +2,8 @@
 	<arg name="dynamixel_namespace" value="dynamixel_controller" />
 	
     <!-- Load the URDF/Xacro model of our robot -->
-	<param name="robot_description" command="$(find xacro)/xacro.py '$(find right_arm)/urdf/maggie.urdf.xacro'" />
+	<!--param name="robot_description" command="$(find xacro)/xacro.py '$(find right_arm)/urdf/maggie.urdf.xacro'" /-->
+	<param name="robot_description" command="$(find xacro)/xacro.py '$(find maggie_model)/urdf/maggie.xacro'" />
 
     <!-- Publish the robot state -->
 	<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
@@ -19,11 +20,16 @@
                port_name: "/dev/ttyUSB0"
                baud_rate: 1000000
                min_motor_id: 1
-               max_motor_id: 5 
-               update_rate: 5 
+               max_motor_id: 6 
+               update_rate: 10 
       </rosparam>
    </node>
    
+
+    <!-- Load joint controller configuration from YAML file to parameter server -->
+    <rosparam ns="$(arg dynamixel_namespace)" file="$(find right_arm)/params/right_arm_params.yaml" command="load"/>
+
+
     <!-- Load joint controller configuration from YAML file to parameter server -->
     <rosparam ns="$(arg dynamixel_namespace)" file="$(find right_arm)/params/right_arm_params.yaml" command="load"/>
 
@@ -37,7 +43,8 @@
         forearm_roll_controller
 	shoulder_pan_controller
 	shoulder_tilt_controller
-	upper_arm_roll_controller"
+	upper_arm_roll_controller
+	wrist_tilt_controller"
         output="screen" />
 
    <!-- Start the Dynamixel Joint States Publisher -->

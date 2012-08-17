@@ -114,6 +114,13 @@ void updateMotors(Motor *motor, LList<byte> *inputData)
             break;
         }
     }
+//    else if (isStepperMotor(motor->getID()))
+//    {
+      /*
+       * Future enhancement???
+       * This is a conventional write_data - not a broadcast.
+       */
+//    }
      
    /*
     * Finish by broadcasting to the servo motors.
@@ -178,7 +185,8 @@ Motor *getMotor(byte motorID)
 
 bool isServoMotor(byte motorID)
 {
-  return (motorID < 3); 
+  //return (motorID < 3) || (motorID > 5);
+  return !isStepperMotor(motorID);
 }
 
 bool isStepperMotor(byte motorID)

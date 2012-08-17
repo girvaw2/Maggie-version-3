@@ -1,11 +1,5 @@
 #include "upperArmRollStepper.h"
 
-/*
- * Instruction codes
- */
-#define PING           0x01
-#define READ_DATA      0x02  
-
 extern void shoulderPanLimitReached();
 extern void shoulderTiltLimitReached();
 
@@ -20,7 +14,8 @@ UpperArmRollStepper::UpperArmRollStepper(byte ID) : Stepper (ID)
   directionPin = 38;
   
   //Disable enable pin for the moment - active high
-  PORTC &= 0xFD;
+  //PORTC &= 0xFD;
+  PORTC |= 0x02;
   
   centrePositionInDynamixelUnits = 512;
   centrePositionInSteps = 432; // 50 degrees. 
@@ -115,6 +110,13 @@ void UpperArmRollStepper::setResponsePacket()
        initResponsePacket();
        addResponsePacketParameters();
        responsePacket.push_back(calcCheckSum());
+       break;
+     
+     case WRITE_DATA:
+       outLength = 0x02;
+       initResponsePacket();
+       responsePacket.push_back(calcCheckSum());
+       break;
   }
 }
 
@@ -134,6 +136,12 @@ void UpperArmRollStepper::addResponsePacketParameters()
       case firmwareVersion:
         responsePacket.push_back(0x01);
         break;
+      case uniqueID:
+        responsePacket.push_back(UPPER_ARM_ROLL_MOTOR);
+        break;
+      case baudRate:
+        responsePacket.push_back(0x01); // 1000000
+        break;
       case returnDelayTime:
         responsePacket.push_back(0xFA);
         break;
@@ -149,11 +157,59 @@ void UpperArmRollStepper::addResponsePacketParameters()
       case ccwAngleLimit_H:
         responsePacket.push_back(0x03);
         break;
+      case limitTemperature_H:
+        responsePacket.push_back(0x55);
+        break;
       case limitVoltage_L:
         responsePacket.push_back(0x3C);
         break;
       case limitVoltage_H:
         responsePacket.push_back(0xBE);
+        break;
+      case maxTorque_L:
+        responsePacket.push_back(0xFF);
+        break;
+      case maxTorque_H:
+        responsePacket.push_back(0x03);
+        break;
+      case statusReturnLevel:
+        responsePacket.push_back(0x02);
+        break;
+      case alarmLED:
+        responsePacket.push_back(0x04);
+        break;
+      case alarmShutdown:
+        responsePacket.push_back(0x04);
+        break;
+      case downCalibration_L:
+        responsePacket.push_back(0x00);
+        break;
+      case downCalibration_H:
+        responsePacket.push_back(0x00);
+        break;
+      case upCalibration_L:
+        responsePacket.push_back(0x00);
+        break;
+      case upCalibration_H:
+        responsePacket.push_back(0x00);
+        break;
+      case torqueEnable:
+        responsePacket.push_back(0x00);
+        break;
+      case LED:
+        responsePacket.push_back(0x00);
+        break;
+      case cwComplianceMargin:
+        responsePacket.push_back(0x00);
+        break;
+      case ccwComplianceMargin:
+        responsePacket.push_back(0x00);
+        break;
+      case cwComplianceSlope:
+        responsePacket.push_back(0x20);
+        break;
+      case ccwComplianceSlope:
+        responsePacket.push_back(0x20);
         break;
       case goalPosition_L:
         responsePacket.push_back(goalPosition % 256);
@@ -208,6 +264,7 @@ void UpperArmRollStepper::addResponsePacketParameters()
         break;
         
       default:
+        responsePacket.push_back(0x00);
         break;
     }
   }
@@ -322,7 +379,7 @@ void UpperArmRollStepper::disableTimer()
 {
     TCCR5B = 0;
     TIMSK5 &= 0xFD;     // Disable timer 3 OC interrupt A
-    PORTC &= 0xFD;      // Disable enable pin - active HIGH
+    //PORTC &= 0xFD;      // Disable enable pin - active HIGH
     PORTC |= 0x08;      // Set the clock pin to HIGH
     TCNT5 = 0;
     isMoving = false;

@@ -1,4 +1,4 @@
-dynamixels: ['elbow_tilt_joint', 'forearm_roll_joint', 'shoulder_pan_joint', 'shoulder_tilt_joint', 'upper_arm_roll_joint']
+dynamixels: ['elbow_tilt_joint', 'forearm_roll_joint', 'shoulder_pan_joint', 'shoulder_tilt_joint', 'upper_arm_roll_joint', 'wrist_tilt_joint']
 
 elbow_tilt_controller:
     controller:
@@ -70,3 +70,16 @@ upper_arm_roll_controller:
         min: 400
         max: 600
 
+wrist_tilt_controller:
+    controller:
+        package: dynamixel_controllers
+        module: joint_position_controller
+        type: JointPositionController
+    joint_name: wrist_tilt_joint
+    joint_speed: 0.5 
+    joint_max_speed: 1
+    motor:
+        id: 6 
+        init: 512
+        min: 0
+        max: 1023
