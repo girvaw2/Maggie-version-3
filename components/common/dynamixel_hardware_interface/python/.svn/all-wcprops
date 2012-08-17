@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/1530/trunk/arrg/ua_experimental/dynamixel_hardware_interface/python
+END
+dynamixel_io.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/1530/trunk/arrg/ua_experimental/dynamixel_hardware_interface/python/dynamixel_io.cpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/1525/trunk/arrg/ua_experimental/dynamixel_hardware_interface/python/CMakeLists.txt
+END

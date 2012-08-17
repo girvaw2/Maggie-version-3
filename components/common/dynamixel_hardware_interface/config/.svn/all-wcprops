@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/1531/trunk/arrg/ua_experimental/dynamixel_hardware_interface/config
+END
+controller_configuration.yaml
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/!svn/ver/1531/trunk/arrg/ua_experimental/dynamixel_hardware_interface/config/controller_configuration.yaml
+END
+controller_manager.yaml
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/!svn/ver/1526/trunk/arrg/ua_experimental/dynamixel_hardware_interface/config/controller_manager.yaml
+END

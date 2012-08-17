@@ -1,0 +1,31 @@
+elbow_tilt_controller:
+    type: dynamixel_hardware_interface/JointPositionController
+    joint: elbow_tilt_joint
+    max_velocity: 3.2
+    motors:
+        - id: 1
+          init: 512
+          min: 0
+          max: 1023
+          compliance_margin: 2
+          compliance_slope: 64
+
+forearm_roll_controller:
+    type: dynamixel_hardware_interface/JointPositionController
+    joint: forearm_roll_joint
+    max_velocity: 3.2
+    motors:
+        - id: 2
+          init: 512
+          min: 0
+          max: 1023
+
+multi_joint_c:
+    type: dynamixel_hardware_interface/JointTrajectoryActionController
+    dependencies:
+        - elbow_tilt_controller
+        - forearm_roll_controller
+    joint_trajectory_action_node:
+        min_velocity: 0.1
+        constraints:
+            goal_time: 0.25

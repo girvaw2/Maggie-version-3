@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/1526/trunk/arrg/ua_experimental/dynamixel_hardware_interface/msg
+END
+MotorStateList.msg
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/!svn/ver/1475/trunk/arrg/ua_experimental/dynamixel_hardware_interface/msg/MotorStateList.msg
+END
+MotorState.msg
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/!svn/ver/1475/trunk/arrg/ua_experimental/dynamixel_hardware_interface/msg/MotorState.msg
+END
+JointState.msg
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/!svn/ver/1526/trunk/arrg/ua_experimental/dynamixel_hardware_interface/msg/JointState.msg
+END

@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/1540/trunk/arrg/ua_experimental/dynamixel_hardware_interface
+END
+controller_plugins.xml
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/!svn/ver/1474/trunk/arrg/ua_experimental/dynamixel_hardware_interface/controller_plugins.xml
+END
+dynamixel_hardware_interface.kdev4
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/!svn/ver/1474/trunk/arrg/ua_experimental/dynamixel_hardware_interface/dynamixel_hardware_interface.kdev4
+END
+manifest.xml
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/1525/trunk/arrg/ua_experimental/dynamixel_hardware_interface/manifest.xml
+END
+mainpage.dox
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/1474/trunk/arrg/ua_experimental/dynamixel_hardware_interface/mainpage.dox
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/!svn/ver/1525/trunk/arrg/ua_experimental/dynamixel_hardware_interface/CMakeLists.txt
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/1474/trunk/arrg/ua_experimental/dynamixel_hardware_interface/Makefile
+END

@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/1535/trunk/arrg/ua_experimental/dynamixel_hardware_interface/src
+END
+serial_proxy.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/!svn/ver/1512/trunk/arrg/ua_experimental/dynamixel_hardware_interface/src/serial_proxy.cpp
+END
+dynamixel_io.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/!svn/ver/1530/trunk/arrg/ua_experimental/dynamixel_hardware_interface/src/dynamixel_io.cpp
+END
+joint_torque_controller.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/!svn/ver/1535/trunk/arrg/ua_experimental/dynamixel_hardware_interface/src/joint_torque_controller.cpp
+END
+joint_trajectory_action_controller.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/!svn/ver/1480/trunk/arrg/ua_experimental/dynamixel_hardware_interface/src/joint_trajectory_action_controller.cpp
+END
+joint_position_controller.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/!svn/ver/1535/trunk/arrg/ua_experimental/dynamixel_hardware_interface/src/joint_position_controller.cpp
+END
+controller_manager.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/!svn/ver/1526/trunk/arrg/ua_experimental/dynamixel_hardware_interface/src/controller_manager.cpp
+END

@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/1511/trunk/arrg/ua_experimental/dynamixel_hardware_interface/srv
+END
+TorqueEnable.srv
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/!svn/ver/1483/trunk/arrg/ua_experimental/dynamixel_hardware_interface/srv/TorqueEnable.srv
+END
+RestartController.srv
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/!svn/ver/1481/trunk/arrg/ua_experimental/dynamixel_hardware_interface/srv/RestartController.srv
+END
+SetComplianceSlope.srv
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/!svn/ver/1511/trunk/arrg/ua_experimental/dynamixel_hardware_interface/srv/SetComplianceSlope.srv
+END
+StopController.srv
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/!svn/ver/1474/trunk/arrg/ua_experimental/dynamixel_hardware_interface/srv/StopController.srv
+END
+SetVelocity.srv
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/!svn/ver/1483/trunk/arrg/ua_experimental/dynamixel_hardware_interface/srv/SetVelocity.srv
+END
+SetTorqueLimit.srv
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/!svn/ver/1489/trunk/arrg/ua_experimental/dynamixel_hardware_interface/srv/SetTorqueLimit.srv
+END
+StartController.srv
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/1481/trunk/arrg/ua_experimental/dynamixel_hardware_interface/srv/StartController.srv
+END
+SetComplianceMargin.srv
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/!svn/ver/1511/trunk/arrg/ua_experimental/dynamixel_hardware_interface/srv/SetComplianceMargin.srv
+END

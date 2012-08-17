@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/!svn/ver/1535/trunk/arrg/ua_experimental/dynamixel_hardware_interface/include/dynamixel_hardware_interface
+END
+joint_trajectory_action_controller.h
+K 25
+svn:wc:ra_dav:version-url
+V 148
+/svn/!svn/ver/1474/trunk/arrg/ua_experimental/dynamixel_hardware_interface/include/dynamixel_hardware_interface/joint_trajectory_action_controller.h
+END
+joint_position_controller.h
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/svn/!svn/ver/1535/trunk/arrg/ua_experimental/dynamixel_hardware_interface/include/dynamixel_hardware_interface/joint_position_controller.h
+END
+controller_manager.h
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/!svn/ver/1481/trunk/arrg/ua_experimental/dynamixel_hardware_interface/include/dynamixel_hardware_interface/controller_manager.h
+END
+multi_joint_controller.h
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/!svn/ver/1475/trunk/arrg/ua_experimental/dynamixel_hardware_interface/include/dynamixel_hardware_interface/multi_joint_controller.h
+END
+serial_proxy.h
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/!svn/ver/1485/trunk/arrg/ua_experimental/dynamixel_hardware_interface/include/dynamixel_hardware_interface/serial_proxy.h
+END
+dynamixel_const.h
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/!svn/ver/1487/trunk/arrg/ua_experimental/dynamixel_hardware_interface/include/dynamixel_hardware_interface/dynamixel_const.h
+END
+dynamixel_io.h
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/!svn/ver/1530/trunk/arrg/ua_experimental/dynamixel_hardware_interface/include/dynamixel_hardware_interface/dynamixel_io.h
+END
+joint_torque_controller.h
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/!svn/ver/1535/trunk/arrg/ua_experimental/dynamixel_hardware_interface/include/dynamixel_hardware_interface/joint_torque_controller.h
+END
+single_joint_controller.h
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/!svn/ver/1535/trunk/arrg/ua_experimental/dynamixel_hardware_interface/include/dynamixel_hardware_interface/single_joint_controller.h
+END

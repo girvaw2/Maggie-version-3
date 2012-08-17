@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/1540/trunk/arrg/ua_experimental/dynamixel_hardware_interface/scripts
+END
+set_torque.py
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/1530/trunk/arrg/ua_experimental/dynamixel_hardware_interface/scripts/set_torque.py
+END
+set_servo_config.py
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/!svn/ver/1530/trunk/arrg/ua_experimental/dynamixel_hardware_interface/scripts/set_servo_config.py
+END
+info_dump.py
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/!svn/ver/1530/trunk/arrg/ua_experimental/dynamixel_hardware_interface/scripts/info_dump.py
+END
+change_id.py
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/!svn/ver/1530/trunk/arrg/ua_experimental/dynamixel_hardware_interface/scripts/change_id.py
+END
+controller_spawner.py
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/!svn/ver/1540/trunk/arrg/ua_experimental/dynamixel_hardware_interface/scripts/controller_spawner.py
+END
