@@ -19,6 +19,9 @@
 #define SHOULDER_TILT_MOTOR   4
 #define UPPER_ARM_ROLL_MOTOR  5
 
+#define GOAL_POSITION          0x1E
+#define MOVING_SPEED           0x20
+
 class Stepper : public Motor
 {
 public:
@@ -69,6 +72,8 @@ private: // variables
   volatile bool stepBit;
   volatile bool clockwise;
   volatile bool isMoving;
+  
+
   
   enum ControlTable
   {

@@ -39,6 +39,7 @@ private: // methods
 
   void enableTimer();
   void disableTimer();
+  void setTargetSpeed(int dynamixelTargetSpeed);
   void moveToGoalPosition();
 
 private: // variables  
@@ -56,6 +57,7 @@ private: // variables
   int centrePositionInSteps;
   int referencePositionFromCentreInSteps;
   
+  int timerSpeedCount;
   int goalPosition; // in dynamixel units relative to zero (CCW) osition 
   volatile int currentPosition; // in steps relative to zero (CCW) position.
   volatile int stepsToDo;

@@ -17,6 +17,8 @@ ShoulderPanStepper::ShoulderPanStepper(byte ID) : Stepper (ID)
   centrePositionInSteps = 432; // 50 degrees. 
   referencePositionFromCentreInSteps = 740; 
   
+  timerSpeedCount = 1000; // 4ms pulse (with 64 x prescaler) - REM stepper only steps on every 2nd pulse, so this equates to ~3.94 r/s (14.475 degrees/second or 2.4125 rpm).
+  
   goalPosition = centrePositionInDynamixelUnits;
   currentPosition = centrePositionInSteps;
   
@@ -50,10 +52,13 @@ void ShoulderPanStepper::doOperation(byte operation, LList<byte> *inputData)
 {
   switch (operation)
   {
-    case 0x1E: // goal position
+    case GOAL_POSITION: //0x1E
       goalPosition = inputData->getElement(8) + (256 * inputData->getElement(9));
       moveToGoalPosition();
       break;
+    case MOVING_SPEED:
+      setTargetSpeed(inputData->getElement(8) + (256 * inputData->getElement(9)));
+      break;     
   }
 }
 
@@ -231,10 +236,16 @@ void ShoulderPanStepper::addResponsePacketParameters()
         responsePacket.push_back ((centrePositionInDynamixelUnits + convertFromStepsToDynamixelUnits(currentPosition - centrePositionInSteps)) / 256);
         break;
       case presentSpeed_L:
-        responsePacket.push_back(0x00);
+        if (isMoving && timerSpeedCount > 0)
+          responsePacket.push_back((55660 / timerSpeedCount) % 256); //??? 21483 == 1023 * 21;
+        else
+          responsePacket.push_back(0x00);
         break;
       case presentSpeed_H:
-        responsePacket.push_back(0x00);
+        if (isMoving && timerSpeedCount > 0)
+          responsePacket.push_back((55660 / timerSpeedCount) / 256); // 21483 == 1023 * 21;
+        else
+          responsePacket.push_back(0x00);
         break;
       case presentLoad_L:
         responsePacket.push_back(0x00);
@@ -243,7 +254,7 @@ void ShoulderPanStepper::addResponsePacketParameters()
         responsePacket.push_back(0x00);
         break;
       case presentVoltage:
-        responsePacket.push_back(30);
+        responsePacket.push_back(0x5a); // 9v - this has an effect on the speed of the motor!!!
         break;
       case presentTemperature:
         responsePacket.push_back(20);
@@ -284,6 +295,24 @@ void ShoulderPanStepper::reset()
     inLength = outLength = 0;
     inParameters.clear();
     responsePacket.clear();
+}
+
+void ShoulderPanStepper::setTargetSpeed(int dynamixelTargetSpeed)
+{
+  /*
+   * The maximum (dynamixel) speed of 114 rpm (1.9 r/s) equates to a dynamixel value of 0x3ff (1023).
+   *
+   * Our stepper has a maximum of 118 rpm - broadly similar.
+   * As each step is 0.1158 degrees, we have to pulse the stepper motor 5.906 Khz to achieve an angular velocity of 1.9 r/s (684 degrees/second).
+   * 
+   * We have a 16 MHz clock and a 64 x prescaler configured. As the stepper steps on every rising edge (every 2nd pulse of the timer), 1.9 r/s (1023 dynamixel units) corresponds to a timer count of ~21.
+   * The slowest dynamixel speed of 0.11 rpm corresponds to a 1 dynamixel unit.
+   */
+   
+   if (dynamixelTargetSpeed == 0)
+     timerSpeedCount = 250;  // equates to the max possible speed (for the supplied voltage, which we'll conservatively set to ~ 1 r/s.
+   else
+     timerSpeedCount = 55660 / dynamixelTargetSpeed; //??? 21483 == 1023 * 21
 }
 
 void ShoulderPanStepper::moveToGoalPosition()
@@ -372,7 +401,7 @@ void ShoulderPanStepper::enableTimer()
      * A precaler or 64 & a OCRF3A count of 250 equates to an angular velocity of approximately 1 rad/s
      */    
     TCCR3A = 0; // set entire TCCR3A register to 0
-    OCR3A = 500; // 2 ms pulse
+    OCR3A = timerSpeedCount; 
     //OCR3A = 250; // 1 ms pulse
     TCCR3B = 0x0B; // start timer, 64 x prescaler, CTC mode.
     bitWrite(TIMSK3, OCIE3A, 1); // Enable timer 3 OC interrupt A

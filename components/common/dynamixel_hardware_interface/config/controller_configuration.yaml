@@ -33,7 +33,7 @@ wrist_tilt_controller:
 shoulder_pan_controller:
     type: dynamixel_hardware_interface/JointPositionController
     joint: shoulder_pan_joint
-    max_velocity: 1.0 
+    max_velocity: 3.2 
     motors:
         - id: 3 
           init: 512
@@ -43,7 +43,7 @@ shoulder_pan_controller:
 shoulder_tilt_controller:
     type: dynamixel_hardware_interface/JointPositionController
     joint: shoulder_tilt_joint
-    max_velocity: 1.0 
+    max_velocity: 3.2 
     motors:
         - id: 4 
           init: 512

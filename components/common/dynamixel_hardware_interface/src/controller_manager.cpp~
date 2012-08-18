@@ -482,7 +482,7 @@ void ControllerManager::checkDeps()
 //   	    std::string sInputString;
 // 	    // Wait for input from stdin (the keyboard)
 // 	    std::cin >> sInputString;
-    ::sleep(1);
+    ::usleep(100000);
   
     std::set<std::string> loaded_controllers;
     std::map<std::string, controller::SingleJointController*>::iterator c_it;
@@ -582,9 +582,9 @@ void ControllerManager::checkDeps()
         else
         {
 	  // BILLY
-	    std::string sInputString;
-	    // Wait for input from stdin (the keyboard)
-	    std::cin >> sInputString;
+// 	    std::string sInputString;
+// 	    Wait for input from stdin (the keyboard)
+// 	    std::cin >> sInputString;
 	    
             std::vector<std::string> diff(deps.size());
             std::set_difference(deps.begin(), deps.end(), loaded_controllers.begin(), loaded_controllers.end(), diff.begin());
