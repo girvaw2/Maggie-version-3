@@ -1079,12 +1079,6 @@ bool DynamixelIO::setVelocity(int servo_id, int16_t velocity)
 
     ROS_INFO("setVelocity to %d", velocity);
     
-//     {
-//       FILE *fp = fopen("/home/billy/robotics/maggie/components/common/dynamixel_hardware_interface/BGVelocity.txt", "aw");
-//       fprintf (fp, "Velocity = %d", velocity);
-//       fclose(fp);
-//     }
-    
     if (velocity >= 0)
     {
         data.push_back(velocity % 256); // lo_byte

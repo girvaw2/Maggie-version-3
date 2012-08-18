@@ -212,12 +212,6 @@ bool JointPositionController::setVelocity(double velocity)
         
         pair.push_back(motor_ids_[i]);
         pair.push_back(vel_enc);
-
-{
-      FILE *fp = fopen("/home/billy/robotics/maggie/components/common/dynamixel_hardware_interface/BGVelocity.txt", "aw");
-      fprintf (fp, "Motor = %d Velocity = %f velRad2Enc = %d velocityPerEncoderTick = %f\n\r", motor_ids_[i], velocity, vel_enc, velocity_per_encoder_tick_);
-      fclose(fp);
-}
 	
         ROS_DEBUG("%s, setting velocity for motor %d to %d", name_.c_str(), motor_ids_[i], vel_enc);
         mcv.push_back(pair);

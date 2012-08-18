@@ -53,7 +53,7 @@ shoulder_tilt_controller:
 upper_arm_roll_controller:
     type: dynamixel_hardware_interface/JointPositionController
     joint: upper_arm_roll_joint
-    max_velocity: 1.0 
+    max_velocity: 3.2 
     motors:
         - id: 5 
           init: 512

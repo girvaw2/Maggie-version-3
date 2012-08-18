@@ -20,6 +20,8 @@ ShoulderTiltStepper::ShoulderTiltStepper(byte ID) : Stepper (ID)
   centrePositionInSteps = 432;  
   referencePositionFromCentreInSteps = 450; 
   
+  timerSpeedCount = 1000; // 4ms pulse (with 64 x prescaler) - REM stepper only steps on every 2nd pulse, so this equates to ~3.94 r/s (14.475 degrees/second or 2.4125 rpm).
+  
   goalPosition = centrePositionInDynamixelUnits;
   currentPosition = centrePositionInSteps;
   
@@ -53,10 +55,14 @@ void ShoulderTiltStepper::doOperation(byte operation, LList<byte> *inputData)
 {
   switch (operation)
   {
-    case 0x1E: // goal position
+    case GOAL_POSITION: //0x1E
       goalPosition = inputData->getElement(8) + (256 * inputData->getElement(9));
       moveToGoalPosition();
       break;
+      
+    case MOVING_SPEED:
+      setTargetSpeed(inputData->getElement(8) + (256 * inputData->getElement(9)));
+      break;  
   }
   
 }
@@ -235,10 +241,16 @@ void ShoulderTiltStepper::addResponsePacketParameters()
         responsePacket.push_back ((centrePositionInDynamixelUnits + convertFromStepsToDynamixelUnits(currentPosition - centrePositionInSteps)) / 256);
         break;
       case presentSpeed_L:
-        responsePacket.push_back(0x00);
+        if (isMoving && timerSpeedCount > 0)
+          responsePacket.push_back((55660 / timerSpeedCount) % 256); //??? 21483 == 1023 * 21;
+        else
+          responsePacket.push_back(0x00);
         break;
       case presentSpeed_H:
-        responsePacket.push_back(0x00);
+        if (isMoving && timerSpeedCount > 0)
+          responsePacket.push_back((55660 / timerSpeedCount) / 256); // 21483 == 1023 * 21;
+        else
+          responsePacket.push_back(0x00);
         break;
       case presentLoad_L:
         responsePacket.push_back(0x00);
@@ -247,7 +259,7 @@ void ShoulderTiltStepper::addResponsePacketParameters()
         responsePacket.push_back(0x00);
         break;
       case presentVoltage:
-        responsePacket.push_back(30);
+        responsePacket.push_back(0x5a); // 9v - this has an effect on the speed of the motor!!!
         break;
       case presentTemperature:
         responsePacket.push_back(20);
@@ -288,6 +300,24 @@ void ShoulderTiltStepper::reset()
     inLength = outLength = 0;
     inParameters.clear();
     responsePacket.clear();
+}
+
+void ShoulderTiltStepper::setTargetSpeed(int dynamixelTargetSpeed)
+{
+  /*
+   * The maximum (dynamixel) speed of 114 rpm (1.9 r/s) equates to a dynamixel value of 0x3ff (1023).
+   *
+   * Our stepper has a maximum of 118 rpm - broadly similar.
+   * As each step is 0.1158 degrees, we have to pulse the stepper motor 5.906 Khz to achieve an angular velocity of 1.9 r/s (684 degrees/second).
+   * 
+   * We have a 16 MHz clock and a 64 x prescaler configured. As the stepper steps on every rising edge (every 2nd pulse of the timer), 1.9 r/s (1023 dynamixel units) corresponds to a timer count of ~21.
+   * The slowest dynamixel speed of 0.11 rpm corresponds to a 1 dynamixel unit.
+   */
+   
+   if (dynamixelTargetSpeed == 0)
+     timerSpeedCount = 250;  // equates to the max possible speed (for the supplied voltage, which we'll conservatively set to ~ 1 r/s.
+   else
+     timerSpeedCount = 55660 / dynamixelTargetSpeed; //??? 21483 == 1023 * 21
 }
 
 void ShoulderTiltStepper::moveToGoalPosition()
@@ -371,8 +401,7 @@ void ShoulderTiltStepper::enableTimer()
      * A precaler or 64 & a OCRF3A count of 250 equates to an angular velocity of approximately 1 rad/s
      */
     TCCR4A = 0; // set entire TCCR4A register to 0
-    OCR4A = 1000; // 8 ms pulse
-    //OCR4A = 250; // 2 ms pulse
+    OCR4A = timerSpeedCount; 
     TCCR4B = 0x0B; // start timer, 64 x prescaler, CTC mode.
     bitWrite(TIMSK4, OCIE4A, 1); // Enable timer 4 OC interrupt A
 }
@@ -397,7 +426,7 @@ void ShoulderTiltStepper::moveToHomePosition()
     disableTimer(); // stop the motor.
     
    /*
-    * For the shoulder pan motor, move the turret fully CCW.
+    * For the shoulder tilt motor, move the motor fully up.
     * For this motor, the min (CCW) is 0, the centre is 733 and the max (CW) 1466
     */
     detachInterrupt(1);

@@ -21,6 +21,7 @@ UpperArmRollStepper::UpperArmRollStepper(byte ID) : Stepper (ID)
   centrePositionInSteps = 432; // 50 degrees. 
   referencePositionFromCentreInSteps = 740; 
   
+  timerSpeedCount = 3000;
   goalPosition = centrePositionInDynamixelUnits;
   currentPosition = centrePositionInSteps;
   
@@ -54,12 +55,14 @@ void UpperArmRollStepper::doOperation(byte operation, LList<byte> *inputData)
 {
   switch (operation)
   {
-    case 0x1E: // goal position
+    case GOAL_POSITION: //0x1E
       goalPosition = inputData->getElement(8) + (256 * inputData->getElement(9));
       moveToGoalPosition();
       break;
+    case MOVING_SPEED:
+      setTargetSpeed(inputData->getElement(8) + (256 * inputData->getElement(9)));
+      break;   
   }
-  
 }
 
 void UpperArmRollStepper::extractInputPacketField(byte field, byte index)
@@ -236,10 +239,16 @@ void UpperArmRollStepper::addResponsePacketParameters()
         responsePacket.push_back ((centrePositionInDynamixelUnits + convertFromStepsToDynamixelUnits(currentPosition - centrePositionInSteps)) / 256);
         break;
       case presentSpeed_L:
-        responsePacket.push_back(0x00);
+        if (isMoving && timerSpeedCount > 0)
+          responsePacket.push_back((41745 / timerSpeedCount) % 256); //??? 21483 == 1023 * 21;
+        else
+          responsePacket.push_back(0x00);
         break;
       case presentSpeed_H:
-        responsePacket.push_back(0x00);
+        if (isMoving && timerSpeedCount > 0)
+          responsePacket.push_back((41745 / timerSpeedCount) / 256); // 21483 == 1023 * 21;
+        else
+          responsePacket.push_back(0x00);
         break;
       case presentLoad_L:
         responsePacket.push_back(0x00);
@@ -248,7 +257,7 @@ void UpperArmRollStepper::addResponsePacketParameters()
         responsePacket.push_back(0x00);
         break;
       case presentVoltage:
-        responsePacket.push_back(30);
+        responsePacket.push_back(0x5a); // 9v - this has an effect on the speed of the motor!!!
         break;
       case presentTemperature:
         responsePacket.push_back(20);
@@ -291,6 +300,24 @@ void UpperArmRollStepper::reset()
     responsePacket.clear();
 }
 
+void UpperArmRollStepper::setTargetSpeed(int dynamixelTargetSpeed)
+{
+  /*
+   * The maximum (dynamixel) speed of 114 rpm (1.9 r/s) equates to a dynamixel value of 0x3ff (1023).
+   *
+   * Our stepper has a maximum of 118 rpm - broadly similar.
+   * As each step is 0.1158 degrees, we have to pulse the stepper motor 5.906 Khz to achieve an angular velocity of 1.9 r/s (684 degrees/second).
+   * 
+   * We have a 16 MHz clock and a 256 x prescaler configured. As the stepper steps on every rising edge (every 2nd pulse of the timer), 1.9 r/s (1023 dynamixel units) corresponds to a timer count of ~21.
+   * The slowest dynamixel speed of 0.11 rpm corresponds to a 1 dynamixel unit.
+   */
+   
+   if (dynamixelTargetSpeed == 0)
+     timerSpeedCount = 250;  // equates to the max possible speed (for the supplied voltage, which we'll conservatively set to ~ 1 r/s.
+   else
+     timerSpeedCount = 41745 / dynamixelTargetSpeed; //??? 21483 == 1023 * 21
+}
+
 void UpperArmRollStepper::moveToGoalPosition()
 {
   /*
@@ -315,15 +342,15 @@ void UpperArmRollStepper::moveToGoalPosition()
 int UpperArmRollStepper::convertFromStepsToDynamixelUnits(int steps)
 {
   /* 
-   * Each step is 0.1158 degrees.
-   * Steps * 0.1158 * 1023 / 300
+   * Each step is 0.3474 degrees.
+   * Steps * 0.3474 * 1023 / 300
    */
-  return (int)((float)steps * 0.39498);
+  return (int)((float)steps * 1.184634);
 }
 
 int UpperArmRollStepper::convertFromDynamixelUnitsToSteps(int dynamixelUnits)
 {
-  return (int)((float)dynamixelUnits / 0.39498);
+  return (int)((float)dynamixelUnits / 1.184634);
 }
 
 void UpperArmRollStepper::incrementPosition()
@@ -370,8 +397,8 @@ void UpperArmRollStepper::enableTimer()
     
     TCNT5 = 0;
     TCCR5A = 0; // set entire TCCR5A register to 0
-    OCR5A = 250; // 1 ms pulse
-    TCCR5B = 0x0B; // start timer, 64 x prescaler, CTC mode.
+    OCR5A = timerSpeedCount; 
+    TCCR5B = 0x0C; // start timer, 256 x prescaler, CTC mode.
     bitWrite(TIMSK5, OCIE5A, 1); // Enable timer 5 OC interrupt A
 }
 
