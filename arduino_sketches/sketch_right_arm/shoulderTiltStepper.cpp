@@ -56,12 +56,12 @@ void ShoulderTiltStepper::doOperation(byte operation, LList<byte> *inputData)
   switch (operation)
   {
     case GOAL_POSITION: //0x1E
-      goalPosition = inputData->getElement(8) + (256 * inputData->getElement(9));
+      goalPosition = inputData->getElement(0) + (256 * inputData->getElement(1));
       moveToGoalPosition();
       break;
       
     case MOVING_SPEED:
-      setTargetSpeed(inputData->getElement(8) + (256 * inputData->getElement(9)));
+      setTargetSpeed(inputData->getElement(0) + (256 * inputData->getElement(1)));
       break;  
   }
   

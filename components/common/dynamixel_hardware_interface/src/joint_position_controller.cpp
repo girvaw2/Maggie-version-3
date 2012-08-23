@@ -42,6 +42,7 @@
 
 #include <std_msgs/Float64.h>
 #include <std_srvs/Empty.h>
+#include <sensor_msgs/JointState.h>
 
 PLUGINLIB_DECLARE_CLASS(dynamixel_hardware_interface,
                         JointPositionController,
@@ -161,6 +162,25 @@ void JointPositionController::processMotorStates(const dynamixel_hardware_interf
     joint_state_.moving = state.moving;
     
     joint_state_pub_.publish(joint_state_);
+    
+    publishJointStates(joint_state_);
+}
+
+void JointPositionController::publishJointStates(const dynamixel_hardware_interface::JointState joint_state_)
+{
+  sensor_msgs::JointState def_joint_state_;
+  
+  size_t pos = name_.find_last_not_of("controller");
+  std::string joint_name = name_;
+  joint_name.replace(pos + 1, 10, "joint");
+  
+  def_joint_state_.name.push_back(joint_name);
+  def_joint_state_.position.push_back(joint_state_.position); 
+  def_joint_state_.velocity.push_back(joint_state_.velocity);
+  def_joint_state_.effort.push_back(joint_state_.load);
+  def_joint_state_.header.stamp = ros::Time::now();
+  
+  def_joint_state_pub_.publish(def_joint_state_);
 }
 
 void JointPositionController::processCommand(const std_msgs::Float64ConstPtr& msg)

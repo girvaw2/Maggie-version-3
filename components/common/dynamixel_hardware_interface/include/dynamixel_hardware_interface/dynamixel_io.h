@@ -220,6 +220,8 @@ private:
     
     bool writePacket(const void* const buffer, size_t count);
     bool readResponse(std::vector<uint8_t>& response);
+    
+    bool bgTest;
 };
 
 }

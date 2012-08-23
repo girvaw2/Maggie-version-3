@@ -58,6 +58,8 @@ public:
     
     void processMotorStates(const dynamixel_hardware_interface::MotorStateListConstPtr& msg);
     void processCommand(const std_msgs::Float64ConstPtr& msg);
+    
+    void publishJointStates(const dynamixel_hardware_interface::JointState joint_state_);
 
     bool setVelocity(double velocity);
     bool processSetVelocity(dynamixel_hardware_interface::SetVelocity::Request& req,

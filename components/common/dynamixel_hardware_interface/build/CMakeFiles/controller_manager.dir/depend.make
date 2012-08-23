@@ -80,6 +80,7 @@ CMakeFiles/controller_manager.dir/src/controller_manager.o: /opt/ros/fuerte/incl
 CMakeFiles/controller_manager.dir/src/controller_manager.o: /opt/ros/fuerte/include/ros/wall_timer.h
 CMakeFiles/controller_manager.dir/src/controller_manager.o: /opt/ros/fuerte/include/ros/wall_timer_options.h
 CMakeFiles/controller_manager.dir/src/controller_manager.o: /opt/ros/fuerte/include/rosconsole/macros_generated.h
+CMakeFiles/controller_manager.dir/src/controller_manager.o: /opt/ros/fuerte/include/sensor_msgs/JointState.h
 CMakeFiles/controller_manager.dir/src/controller_manager.o: /opt/ros/fuerte/include/std_msgs/Float64.h
 CMakeFiles/controller_manager.dir/src/controller_manager.o: /opt/ros/fuerte/include/std_msgs/Header.h
 CMakeFiles/controller_manager.dir/src/controller_manager.o: /opt/ros/fuerte/include/std_srvs/Empty.h

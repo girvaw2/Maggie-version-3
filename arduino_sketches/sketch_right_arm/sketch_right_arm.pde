@@ -101,26 +101,31 @@ void updateMotors(Motor *motor, LList<byte> *inputData)
        /*
         * We're dealing with a broadcast ID, so firstly, we need to find out what the instruction is... 
         */
+        byte instructionLength = inputData->getElement(3);
         byte instruction = inputData->getElement(4);
+  
         switch (instruction)
         {
           case 0x83: // sync write
-            if (isStepperMotor(inputData->getElement(7)))
+  
+            byte operation = inputData->getElement(5);
+            byte dataLength = inputData->getElement(6);
+
+            for (int i = 7; i < instructionLength + 3; i += dataLength + 1)
             {
-              Motor *stepper = addMotor(inputData->getElement(7));
-              byte operation = inputData->getElement(5);
-              stepper->doOperation(operation, inputData);
+              if (isStepperMotor(inputData->getElement(i)))
+              {
+                Motor *stepper = addMotor(inputData->getElement(i));
+                
+                LList<byte>  operationList;
+                operationList.push_back(inputData->getElement(i+1)); 
+                operationList.push_back(inputData->getElement(i+2)); 
+                stepper->doOperation(operation, &operationList);
+              }
             }
             break;
         }
     }
-//    else if (isStepperMotor(motor->getID()))
-//    {
-      /*
-       * Future enhancement???
-       * This is a conventional write_data - not a broadcast.
-       */
-//    }
      
    /*
     * Finish by broadcasting to the servo motors.

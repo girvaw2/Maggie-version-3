@@ -1,3 +1,5 @@
+dynamixels: ['elbow_tilt_joint', 'forearm_roll_joint', 'shoulder_pan_joint', 'shoulder_tilt_joint', 'upper_arm_roll_joint', 'wrist_tilt_joint']
+
 elbow_tilt_controller:
     type: dynamixel_hardware_interface/JointPositionController
     joint: elbow_tilt_joint
@@ -20,11 +22,55 @@ forearm_roll_controller:
           min: 0
           max: 1023
 
-multi_joint_c:
+wrist_tilt_controller:
+    type: dynamixel_hardware_interface/JointPositionController
+    joint: wrist_tilt_joint
+    max_velocity: 3.2
+    motors:
+        - id: 6 
+          init: 512
+          min: 0
+          max: 1023
+
+shoulder_pan_controller:
+    type: dynamixel_hardware_interface/JointPositionController
+    joint: shoulder_pan_joint
+    max_velocity: 3.2 
+    motors:
+        - id: 3 
+          init: 512
+          min: 0
+          max: 1023
+
+shoulder_tilt_controller:
+    type: dynamixel_hardware_interface/JointPositionController
+    joint: shoulder_tilt_joint
+    max_velocity: 3.2 
+    motors:
+        - id: 4 
+          init: 512
+          min: 0
+          max: 1023
+
+upper_arm_roll_controller:
+    type: dynamixel_hardware_interface/JointPositionController
+    joint: upper_arm_roll_joint
+    max_velocity: 3.2 
+    motors:
+        - id: 5 
+          init: 512
+          min: 0
+          max: 1023
+
+arm_controller:
     type: dynamixel_hardware_interface/JointTrajectoryActionController
     dependencies:
         - elbow_tilt_controller
         - forearm_roll_controller
+        - shoulder_pan_controller
+        - shoulder_tilt_controller
+        - upper_arm_roll_controller
+        - wrist_tilt_controller
     joint_trajectory_action_node:
         min_velocity: 0.1
         constraints:

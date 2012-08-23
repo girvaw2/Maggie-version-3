@@ -65,6 +65,7 @@ DynamixelIO::DynamixelIO(std::string device="/dev/ttyUSB0",
     // 100 microseconds = 0.1 milliseconds
     flexiport::Timeout t(0, 100);
     port_->SetTimeout(t);
+    bgTest = false;
 }
 
 DynamixelIO::~DynamixelIO()
@@ -1199,22 +1200,47 @@ bool DynamixelIO::setMultiPositionVelocity(std::vector<std::vector<int> > value_
 
         std::vector<uint8_t> vals;
 
-        vals.push_back(motor_id);     // servo id
+	vals.push_back(motor_id);     // servo id
         vals.push_back(position % 256);         // lo_byte
         vals.push_back(position >> 8);          // hi_byte
 
-        if (velocity >= 0)
-        {
-            vals.push_back(velocity % 256);     // lo_byte
-            vals.push_back(velocity >> 8);      // hi_byte
-        }
-        else
-        {
-            vals.push_back((DXL_MAX_VELOCITY_ENCODER - velocity) % 256);    // lo_byte
-            vals.push_back((DXL_MAX_VELOCITY_ENCODER - velocity) >> 8);     // hi_byte
-        }
+//         if (velocity >= 0)
+//         {
+//             vals.push_back(velocity % 256);     // lo_byte
+//             vals.push_back(velocity >> 8);      // hi_byte
+//         }
+//         else
+//         {
+//             vals.push_back((DXL_MAX_VELOCITY_ENCODER - velocity) % 256);    // lo_byte
+//             vals.push_back((DXL_MAX_VELOCITY_ENCODER - velocity) >> 8);     // hi_byte
+//         }
 
-        data.push_back(vals);
+	// BG
+// 	if (motor_id == 1)
+// 	    return true;
+	
+	data.push_back(vals);
+        
+//         if (motor_id == 3)
+// 	{
+// 	  if (position > 450)
+// 	    return true;
+// 	  
+// 	  if (bgTest == true)
+// 	  	return true;
+// 	  
+// 	  //vals.at(0) = 1;
+// 	  
+// 	  ROS_INFO ("setMultiPositionVelocity: motor_id=%d position=%d velocity=%d", motor_id, position, velocity);
+// 	  syncWrite(DXL_GOAL_POSITION_L, data);
+// 	  bgTest = true;
+// 	  ::sleep(5);
+// 	  return true;
+// 	}
+	
+	if (motor_id == 1)
+	  ROS_INFO ("SENDING to motor 1");
+	 
     }
 
     if (syncWrite(DXL_GOAL_POSITION_L, data)) { return true; }
@@ -1608,6 +1634,15 @@ bool DynamixelIO::syncWrite(int address,
     }
 
     packet[packet_length-1] = checksum;
+    
+    {
+      char str[1000];
+      for (int i=0; i <packet_length; i++)
+      {
+	sprintf (str + (i*4), "%03d ", packet[i]);
+      }
+      ROS_INFO("syncWrite packet string = %s", str);
+    }
 
     pthread_mutex_lock(&serial_mutex_);
     bool success = writePacket(packet, packet_length);

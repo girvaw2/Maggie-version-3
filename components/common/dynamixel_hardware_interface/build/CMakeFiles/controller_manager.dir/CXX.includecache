@@ -123,6 +123,8 @@ std_msgs/Float64.h
 -
 std_srvs/Empty.h
 -
+sensor_msgs/JointState.h
+-
 
 ../msg_gen/cpp/include/dynamixel_hardware_interface/JointState.h
 string
@@ -1107,6 +1109,24 @@ ros/forwards.h
 /opt/ros/fuerte/include/ros/ros/forwards.h
 
 /opt/ros/fuerte/include/rosconsole/macros_generated.h
+
+/opt/ros/fuerte/include/sensor_msgs/JointState.h
+string
+-
+vector
+-
+map
+-
+ros/types.h
+-
+ros/serialization.h
+-
+ros/builtin_message_traits.h
+-
+ros/message_operations.h
+-
+std_msgs/Header.h
+-
 
 /opt/ros/fuerte/include/std_msgs/Float64.h
 string

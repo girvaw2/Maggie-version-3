@@ -71,6 +71,7 @@ CMakeFiles/dynamixel_controllers.dir/src/joint_position_controller.o: /opt/ros/f
 CMakeFiles/dynamixel_controllers.dir/src/joint_position_controller.o: /opt/ros/fuerte/include/ros/wall_timer.h
 CMakeFiles/dynamixel_controllers.dir/src/joint_position_controller.o: /opt/ros/fuerte/include/ros/wall_timer_options.h
 CMakeFiles/dynamixel_controllers.dir/src/joint_position_controller.o: /opt/ros/fuerte/include/rosconsole/macros_generated.h
+CMakeFiles/dynamixel_controllers.dir/src/joint_position_controller.o: /opt/ros/fuerte/include/sensor_msgs/JointState.h
 CMakeFiles/dynamixel_controllers.dir/src/joint_position_controller.o: /opt/ros/fuerte/include/std_msgs/Float64.h
 CMakeFiles/dynamixel_controllers.dir/src/joint_position_controller.o: /opt/ros/fuerte/include/std_msgs/Header.h
 CMakeFiles/dynamixel_controllers.dir/src/joint_position_controller.o: /opt/ros/fuerte/include/std_srvs/Empty.h
@@ -166,6 +167,7 @@ CMakeFiles/dynamixel_controllers.dir/src/joint_torque_controller.o: /opt/ros/fue
 CMakeFiles/dynamixel_controllers.dir/src/joint_torque_controller.o: /opt/ros/fuerte/include/ros/wall_timer.h
 CMakeFiles/dynamixel_controllers.dir/src/joint_torque_controller.o: /opt/ros/fuerte/include/ros/wall_timer_options.h
 CMakeFiles/dynamixel_controllers.dir/src/joint_torque_controller.o: /opt/ros/fuerte/include/rosconsole/macros_generated.h
+CMakeFiles/dynamixel_controllers.dir/src/joint_torque_controller.o: /opt/ros/fuerte/include/sensor_msgs/JointState.h
 CMakeFiles/dynamixel_controllers.dir/src/joint_torque_controller.o: /opt/ros/fuerte/include/std_msgs/Float64.h
 CMakeFiles/dynamixel_controllers.dir/src/joint_torque_controller.o: /opt/ros/fuerte/include/std_msgs/Header.h
 CMakeFiles/dynamixel_controllers.dir/src/joint_torque_controller.o: /opt/ros/fuerte/include/std_srvs/Empty.h
@@ -280,6 +282,7 @@ CMakeFiles/dynamixel_controllers.dir/src/joint_trajectory_action_controller.o: /
 CMakeFiles/dynamixel_controllers.dir/src/joint_trajectory_action_controller.o: /opt/ros/fuerte/include/ros/wall_timer.h
 CMakeFiles/dynamixel_controllers.dir/src/joint_trajectory_action_controller.o: /opt/ros/fuerte/include/ros/wall_timer_options.h
 CMakeFiles/dynamixel_controllers.dir/src/joint_trajectory_action_controller.o: /opt/ros/fuerte/include/rosconsole/macros_generated.h
+CMakeFiles/dynamixel_controllers.dir/src/joint_trajectory_action_controller.o: /opt/ros/fuerte/include/sensor_msgs/JointState.h
 CMakeFiles/dynamixel_controllers.dir/src/joint_trajectory_action_controller.o: /opt/ros/fuerte/include/std_msgs/Float64.h
 CMakeFiles/dynamixel_controllers.dir/src/joint_trajectory_action_controller.o: /opt/ros/fuerte/include/std_msgs/Header.h
 CMakeFiles/dynamixel_controllers.dir/src/joint_trajectory_action_controller.o: /opt/ros/fuerte/include/std_srvs/Empty.h
