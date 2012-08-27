@@ -125,11 +125,16 @@ void updateMotors(Motor *motor, LList<byte> *inputData)
             }
             break;
         }
+        
+        /*
+         * Finish by broadcasting to the servo motors.
+         */
+        motor->sendData(inputData);
+        // no response required for broadcast message.
+        return;
     }
      
-   /*
-    * Finish by broadcasting to the servo motors.
-    */
+
    motor->sendData(inputData);
    motor->getResponse();
 }
@@ -213,10 +218,10 @@ void initMotorPositions()
    */
    
    Stepper *stepper = (Stepper *)addMotor(SHOULDER_PAN_MOTOR);
-   stepper->moveToReferencePosition();
+   //stepper->moveToReferencePosition();
    
    stepper = (Stepper *)addMotor(SHOULDER_TILT_MOTOR);
-   stepper->moveToReferencePosition();
+   //stepper->moveToReferencePosition();
    
    stepper = (Stepper *)addMotor(UPPER_ARM_ROLL_MOTOR);
    

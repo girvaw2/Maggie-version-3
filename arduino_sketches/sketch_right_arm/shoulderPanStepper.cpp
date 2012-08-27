@@ -20,6 +20,7 @@ ShoulderPanStepper::ShoulderPanStepper(byte ID) : Stepper (ID)
   timerSpeedCount = 1000; // 4ms pulse (with 64 x prescaler) - REM stepper only steps on every 2nd pulse, so this equates to ~3.94 r/s (14.475 degrees/second or 2.4125 rpm).
   
   goalPosition = centrePositionInDynamixelUnits;
+  
   currentPosition = centrePositionInSteps;
   
   pinMode(clockPin, OUTPUT);
@@ -53,7 +54,7 @@ void ShoulderPanStepper::doOperation(byte operation, LList<byte> *inputData)
   switch (operation)
   {
     case GOAL_POSITION: //0x1E
-      goalPosition = inputData->getElement(0) + (256 * inputData->getElement(1)); 
+      goalPosition = inputData->getElement(0) + (256 * inputData->getElement(1));
       moveToGoalPosition();
       break;
     case MOVING_SPEED:
@@ -212,10 +213,10 @@ void ShoulderPanStepper::addResponsePacketParameters()
         responsePacket.push_back(0x20);
         break;
       case goalPosition_L:
-        responsePacket.push_back(goalPosition % 256);
+        responsePacket.push_back(goalPosition & 0xff); //(goalPosition % 256);
         break;
       case goalPosition_H:
-        responsePacket.push_back(goalPosition / 256);
+        responsePacket.push_back(goalPosition >> 8); //(goalPosition / 256);
         break;
       case movingSpeed_L:
         responsePacket.push_back(0x00);
@@ -230,20 +231,20 @@ void ShoulderPanStepper::addResponsePacketParameters()
         responsePacket.push_back(0x03);
         break;
       case presentPosition_L:
-        responsePacket.push_back ((centrePositionInDynamixelUnits + convertFromStepsToDynamixelUnits(currentPosition - centrePositionInSteps)) % 256);
+        responsePacket.push_back ((centrePositionInDynamixelUnits + convertFromStepsToDynamixelUnits(currentPosition - centrePositionInSteps)) & 0xff); //% 256);
         break;
       case presentPosition_H:
-        responsePacket.push_back ((centrePositionInDynamixelUnits + convertFromStepsToDynamixelUnits(currentPosition - centrePositionInSteps)) / 256);
+        responsePacket.push_back ((centrePositionInDynamixelUnits + convertFromStepsToDynamixelUnits(currentPosition - centrePositionInSteps)) >>  8); // / 256);
         break;
       case presentSpeed_L:
         if (isMoving && timerSpeedCount > 0)
-          responsePacket.push_back((55660 / timerSpeedCount) % 256); //??? 21483 == 1023 * 21;
+          responsePacket.push_back((55660 / timerSpeedCount) & 0xff); //% 256); //??? 21483 == 1023 * 21;
         else
           responsePacket.push_back(0x00);
         break;
       case presentSpeed_H:
         if (isMoving && timerSpeedCount > 0)
-          responsePacket.push_back((55660 / timerSpeedCount) / 256); // 21483 == 1023 * 21;
+          responsePacket.push_back((55660 / timerSpeedCount) >> 8); // / 256); // 21483 == 1023 * 21;
         else
           responsePacket.push_back(0x00);
         break;
@@ -287,7 +288,7 @@ byte ShoulderPanStepper::calcCheckSum()
   
   unsigned int checkSum = getID() + outLength + parameterSum;
   
-  return 255 - ( (getID() + outLength + parameterSum) % 256 );
+  return 255 - ( (getID() + outLength + parameterSum) & 0xff ); // % 256 );
 }
 
 void ShoulderPanStepper::reset()
@@ -317,21 +318,26 @@ void ShoulderPanStepper::setTargetSpeed(int dynamixelTargetSpeed)
 
 void ShoulderPanStepper::moveToGoalPosition()
 {
+  disableTimer();
+  
   /*
    * The goal position is relative to the centre position.It is not an absolute distance from the current position.
    * We therefore need to work out where we are relative to the centre position, then move the motor to that position.
    */
   int goalPositionInSteps = convertFromDynamixelUnitsToSteps(goalPosition - centrePositionInDynamixelUnits) + centrePositionInSteps;
-  
+
   clockwise = currentPosition < goalPositionInSteps;
   
   /*
    * The shoulder pan stepper is now upside down, so CW for it is CCW for the shoulder turret!
    * Swap the direction for the shoulder pan Stepper therefore.
    */
-   digitalWrite(directionPin, !clockwise ); 
-
-     
+   if (clockwise)
+     PORTA &= 0xef;
+   else
+     PORTA |= 0x10;
+  //digitalWrite(directionPin, !clockwise ); 
+   
   stepsToDo =  abs(currentPosition - goalPositionInSteps);
   
   if (stepsToDo)
@@ -352,7 +358,8 @@ int ShoulderPanStepper::convertFromStepsToDynamixelUnits(int steps)
 
 int ShoulderPanStepper::convertFromDynamixelUnitsToSteps(int dynamixelUnits)
 {
-  return (int)((float)dynamixelUnits / 0.39498);
+  //return (int)((float)dynamixelUnits / 0.39498);
+  return (int)((float)dynamixelUnits * 2.5318);
 }
 
 void ShoulderPanStepper::incrementPosition()
@@ -370,7 +377,9 @@ void ShoulderPanStepper::incrementPosition()
       PORTA |= 0x01; // clockPin
      
      if (clockwise)
+     {
        currentPosition++;
+     }
      else
      {
        currentPosition--;
@@ -384,7 +393,7 @@ void ShoulderPanStepper::incrementPosition()
       PORTA &= 0xFE;
    }
    
-   if (stepBit && --stepsToDo == 0)
+   if (stepBit && (--stepsToDo == 0))
    {
      disableTimer();
    }
@@ -415,6 +424,7 @@ void ShoulderPanStepper::disableTimer()
     PORTA |= 0x01;      // Set the clock pin to HIGH
     TCNT3 = 0;
     isMoving = false;
+    stepsToDo = 0;
 }
 
 void ShoulderPanStepper::moveToHomePosition()

@@ -1192,6 +1192,16 @@ bool DynamixelIO::setMultiPositionVelocity(std::vector<std::vector<int> > value_
         int motor_id = value_tuples[i][0];
         int position = value_tuples[i][1];
         int velocity = value_tuples[i][2];
+	
+	if (motor_id == 3) // || motor_id == 4 || motor_id == 5)
+	{
+	  //ros::Time ts;
+	  ROS_INFO("motor_id=%d position=%d velocity=%d time=%f", motor_id, position, velocity, ros::Time::now().toSec());
+	  //velocity = 22;
+	}
+	
+// 	if (motor_id == 4 || motor_id == 5)
+// 	  return true;
 
         DynamixelData* dd = findCachedParameters(motor_id);
         dd->target_position = position;
@@ -1204,43 +1214,18 @@ bool DynamixelIO::setMultiPositionVelocity(std::vector<std::vector<int> > value_
         vals.push_back(position % 256);         // lo_byte
         vals.push_back(position >> 8);          // hi_byte
 
-//         if (velocity >= 0)
-//         {
-//             vals.push_back(velocity % 256);     // lo_byte
-//             vals.push_back(velocity >> 8);      // hi_byte
-//         }
-//         else
-//         {
-//             vals.push_back((DXL_MAX_VELOCITY_ENCODER - velocity) % 256);    // lo_byte
-//             vals.push_back((DXL_MAX_VELOCITY_ENCODER - velocity) >> 8);     // hi_byte
-//         }
+        if (velocity >= 0)
+        {
+            vals.push_back(velocity % 256);     // lo_byte
+            vals.push_back(velocity >> 8);      // hi_byte
+        }
+        else
+        {
+            vals.push_back((DXL_MAX_VELOCITY_ENCODER - velocity) % 256);    // lo_byte
+            vals.push_back((DXL_MAX_VELOCITY_ENCODER - velocity) >> 8);     // hi_byte
+        }
 
-	// BG
-// 	if (motor_id == 1)
-// 	    return true;
-	
 	data.push_back(vals);
-        
-//         if (motor_id == 3)
-// 	{
-// 	  if (position > 450)
-// 	    return true;
-// 	  
-// 	  if (bgTest == true)
-// 	  	return true;
-// 	  
-// 	  //vals.at(0) = 1;
-// 	  
-// 	  ROS_INFO ("setMultiPositionVelocity: motor_id=%d position=%d velocity=%d", motor_id, position, velocity);
-// 	  syncWrite(DXL_GOAL_POSITION_L, data);
-// 	  bgTest = true;
-// 	  ::sleep(5);
-// 	  return true;
-// 	}
-	
-	if (motor_id == 1)
-	  ROS_INFO ("SENDING position %d to motor 1", position);
-	 
     }
 
     if (syncWrite(DXL_GOAL_POSITION_L, data)) { return true; }
@@ -1603,7 +1588,7 @@ bool DynamixelIO::syncWrite(int address,
     for (size_t i = 0; i < data.size(); ++i)
     {
         for (size_t j = 0; j < data[i].size(); ++j)
-        {
+        {	
             sum += data[i][j];
         }
 

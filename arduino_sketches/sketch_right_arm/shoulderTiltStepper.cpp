@@ -217,10 +217,10 @@ void ShoulderTiltStepper::addResponsePacketParameters()
         responsePacket.push_back(0x20);
         break;
       case goalPosition_L:
-        responsePacket.push_back(goalPosition % 256);
+        responsePacket.push_back(goalPosition & 0xff); // % 256);
         break;
       case goalPosition_H:
-        responsePacket.push_back(goalPosition / 256);
+        responsePacket.push_back(goalPosition >> 8); // / 256);
         break;
       case movingSpeed_L:
         responsePacket.push_back(0x00);
@@ -235,20 +235,20 @@ void ShoulderTiltStepper::addResponsePacketParameters()
         responsePacket.push_back(0x03);
         break;
       case presentPosition_L:
-        responsePacket.push_back ((centrePositionInDynamixelUnits + convertFromStepsToDynamixelUnits(currentPosition - centrePositionInSteps)) % 256);
+        responsePacket.push_back ((centrePositionInDynamixelUnits + convertFromStepsToDynamixelUnits(currentPosition - centrePositionInSteps)) & 0xff); // % 256);
         break;
       case presentPosition_H:
-        responsePacket.push_back ((centrePositionInDynamixelUnits + convertFromStepsToDynamixelUnits(currentPosition - centrePositionInSteps)) / 256);
+        responsePacket.push_back ((centrePositionInDynamixelUnits + convertFromStepsToDynamixelUnits(currentPosition - centrePositionInSteps)) >> 8); // / 256);
         break;
       case presentSpeed_L:
         if (isMoving && timerSpeedCount > 0)
-          responsePacket.push_back((55660 / timerSpeedCount) % 256); //??? 21483 == 1023 * 21;
+          responsePacket.push_back((55660 / timerSpeedCount) & 0xff); // % 256); //??? 21483 == 1023 * 21;
         else
           responsePacket.push_back(0x00);
         break;
       case presentSpeed_H:
         if (isMoving && timerSpeedCount > 0)
-          responsePacket.push_back((55660 / timerSpeedCount) / 256); // 21483 == 1023 * 21;
+          responsePacket.push_back((55660 / timerSpeedCount) >> 8); // / 256); // 21483 == 1023 * 21;
         else
           responsePacket.push_back(0x00);
         break;
@@ -292,7 +292,7 @@ byte ShoulderTiltStepper::calcCheckSum()
   
   unsigned int checkSum = getID() + outLength + parameterSum;
   
-  return 255 - ( (getID() + outLength + parameterSum) % 256 );
+  return 255 - ( (getID() + outLength + parameterSum) & 0xff); // % 256 );
 }
 
 void ShoulderTiltStepper::reset()
@@ -322,15 +322,26 @@ void ShoulderTiltStepper::setTargetSpeed(int dynamixelTargetSpeed)
 
 void ShoulderTiltStepper::moveToGoalPosition()
 {
+  disableTimer();
+  
   /*
    * The goal position is relative to the centre position.It is not an absolute distance from the current position.
    * We therefore need to work out where we are relative to the centre position, then move the motor to that position.
    */
   int goalPositionInSteps = convertFromDynamixelUnitsToSteps(goalPosition - centrePositionInDynamixelUnits) + centrePositionInSteps;
   
+  if (currentPosition == goalPositionInSteps)
+  {
+    return;
+  }
+  
   clockwise = currentPosition < goalPositionInSteps;
  
-  digitalWrite(directionPin, !clockwise ); 
+   if (clockwise)
+     PORTC &= 0xdf;
+   else
+     PORTC |= 0x20;
+  //digitalWrite(directionPin, !clockwise ); 
      
   stepsToDo =  abs(currentPosition - goalPositionInSteps);
   
@@ -352,7 +363,8 @@ int ShoulderTiltStepper::convertFromStepsToDynamixelUnits(int steps)
 
 int ShoulderTiltStepper::convertFromDynamixelUnitsToSteps(int dynamixelUnits)
 {
-  return (int)((float)dynamixelUnits / 0.39498);
+  //return (int)((float)dynamixelUnits / 0.39498);
+  return (int)((float)dynamixelUnits * 2.5318);
 }
 
 void ShoulderTiltStepper::incrementPosition()
@@ -370,13 +382,17 @@ void ShoulderTiltStepper::incrementPosition()
      PORTA |= 0x40;
      
      if (clockwise)
+     {
        currentPosition++;
+     }
      else
      {
        currentPosition--;
        
        if (currentPosition < 0)
+       {
          currentPosition = 0;
+       }
      }
    }
    else
@@ -384,7 +400,7 @@ void ShoulderTiltStepper::incrementPosition()
       PORTA &= 0xBF;
    }
    
-   if (stepBit && --stepsToDo == 0)
+   if (stepBit && (--stepsToDo == 0))
    {
      disableTimer();
    }
@@ -414,6 +430,7 @@ void ShoulderTiltStepper::disableTimer()
     PORTA |= 0x40;      // Set the clock pin to HIGH
     TCNT4 = 0;
     isMoving = false;
+    stepsToDo = 0;
 }
 
 void ShoulderTiltStepper::moveToHomePosition()

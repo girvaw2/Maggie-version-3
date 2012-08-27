@@ -26,71 +26,50 @@ class Stepper : public Motor
 {
 public:
 
-  Stepper(byte ID);
+  Stepper(byte ID) : Motor(ID){};
   ~Stepper(){};
   
   virtual void sendData(LList<byte> *inputData);
   virtual void getResponse();
   virtual void doOperation(byte operation, LList<byte> *inputData);
   virtual void incrementPosition();
-  //void incrementUpperArmRollPosition();
   virtual void moveToHomePosition();
   virtual void moveToReferencePosition();
 
-private: // methods
-  void extractInputPacketField(byte field, byte index);
-  void setResponsePacket();
-  void addResponsePacketParameters();
-  byte calcCheckSum();
-  void initResponsePacket(); 
-  int convertFromStepsToDynamixelUnits(int steps);
-  int convertFromDynamixelUnitsToSteps(int dynamixelUnits);
-  void reset();
-
-  void enableTimer();
-  void disableTimer();
-  void moveToGoalPosition();
-
-private: // variables  
-  byte clockPin;
-  byte enablePin;
-  byte directionPin;
-
-  byte instruction;
-  byte inLength;
-  byte outLength;
-  LList<byte> responsePacket;
-  LList<byte> inParameters;
-  
-  int centrePositionInDynamixelUnits;
-  int centrePositionInSteps;
-  int referencePositionFromCentreInSteps;
-  
-  int goalPosition; // in dynamixel units relative to zero (CCW) osition 
-  volatile int currentPosition; // in steps relative to zero (CCW) position.
-  volatile int stepsToDo;
-  volatile bool stepBit;
-  volatile bool clockwise;
-  volatile bool isMoving;
-  
-
-  
+protected:  
   enum ControlTable
   {
     modelNumber_L = 0,
     modelNumber_H,
     firmwareVersion,
-    //...
-    returnDelayTime = 5,
+    uniqueID,
+    baudRate,  
+    returnDelayTime, // 5
     cwAngleLimit_L,
     cwAngleLimit_H,
     ccwAngleLimit_L,
     ccwAngleLimit_H,
-    //...
-    limitVoltage_L = 12,
+    // reserved
+    limitTemperature_H = 11,
+    limitVoltage_L,
     limitVoltage_H,
-    //...
-    goalPosition_L = 30,
+    maxTorque_L,
+    maxTorque_H,
+    statusReturnLevel,
+    alarmLED,
+    alarmShutdown,
+    // reserved
+    downCalibration_L = 20,
+    downCalibration_H,
+    upCalibration_L,
+    upCalibration_H,
+    torqueEnable,
+    LED,
+    cwComplianceMargin,
+    ccwComplianceMargin,
+    cwComplianceSlope,
+    ccwComplianceSlope,
+    goalPosition_L, // 30,
     goalPosition_H,
     movingSpeed_L,
     movingSpeed_H,
