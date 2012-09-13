@@ -1,0 +1,3 @@
+[Project]
+Manager=KDevCMakeManager
+Name=maggie_kinematics_constraint_aware
