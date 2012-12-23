@@ -15,11 +15,6 @@
 #include "shoulderTiltStepper.h"
 #endif
 
-#ifndef UPPER_ARM_ROLL_STEPPER_H
-#define UPPER_ARM_ROLL_STEPPER_H
-#include "upperArmRollStepper.h"
-#endif
-
 #ifndef SERVO_H
 #define SERVO_H
 
@@ -155,9 +150,6 @@ Motor *addMotor(byte motorID)
       else
       if (motorID == SHOULDER_TILT_MOTOR)
         motor = new ShoulderTiltStepper(motorID);
-      else
-      if (motorID == UPPER_ARM_ROLL_MOTOR)
-        motor = new UpperArmRollStepper(motorID);
     }
     else 
     if (isBroadcastMotor(motorID))
@@ -201,7 +193,7 @@ bool isServoMotor(byte motorID)
 
 bool isStepperMotor(byte motorID)
 {
-  return (motorID == SHOULDER_PAN_MOTOR || motorID == SHOULDER_TILT_MOTOR || motorID == UPPER_ARM_ROLL_MOTOR); 
+  return (motorID == SHOULDER_PAN_MOTOR || motorID == SHOULDER_TILT_MOTOR); 
 }
 
 bool isBroadcastMotor(byte motorID)
@@ -222,15 +214,12 @@ void initMotorPositions()
    
    stepper = (Stepper *)addMotor(SHOULDER_TILT_MOTOR);
    //stepper->moveToReferencePosition();
-   
-   stepper = (Stepper *)addMotor(UPPER_ARM_ROLL_MOTOR);
-   
 }
 
 ISR(TIMER3_COMPA_vect) 
 {
   /*
-   * We're in TIMER3's OC interrupt A, so get motor 3's object, and start it moving
+   * We're in TIMER3's OC interrupt A, so get the shoulder pan's motor object, and start it moving
    */
    
   ((ShoulderPanStepper*)getMotor(SHOULDER_PAN_MOTOR))->incrementPosition();
@@ -243,15 +232,6 @@ ISR(TIMER4_COMPA_vect)
    */
    
   ((ShoulderTiltStepper*)getMotor(SHOULDER_TILT_MOTOR))->incrementPosition();
-}
-
-ISR(TIMER5_COMPA_vect) 
-{
-  /*
-   * We're in TIMER5's OC interrupt A, so get motor 5's object, and start it moving
-   */
-   
-  ((UpperArmRollStepper*)getMotor(UPPER_ARM_ROLL_MOTOR))->incrementPosition();
 }
 
 void shoulderPanLimitReached()

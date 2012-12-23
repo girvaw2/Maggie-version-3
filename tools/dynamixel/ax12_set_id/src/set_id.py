@@ -1,13 +1,12 @@
 import roslib
 roslib.load_manifest('pi_head_tracking_3d_part1')
 import rospy, time
-from dynamixel_controllers.srv import TorqueEnable, SetSpeed
 from dynamixel_driver import dynamixel_io
 
 class Relax():
   def __init__(self):
     self.port_name = '/dev/ttyUSB0'
-    self.baud_rate = 1000000
+    self.baud_rate = 57600
     
   def connect(self):
     try:
@@ -29,4 +28,4 @@ if __name__=='__main__':
   
   """ set the old and new servo IDs
   """
-  set_id.set_id(2, 6) 
+  set_id.set_id(1, 2) 

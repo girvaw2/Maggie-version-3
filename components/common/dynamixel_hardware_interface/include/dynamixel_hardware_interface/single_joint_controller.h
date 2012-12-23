@@ -48,6 +48,8 @@
 #include <std_srvs/Empty.h>
 #include <sensor_msgs/JointState.h>
 
+#include <boost/algorithm/string.hpp>
+
 namespace controller
 {
 
@@ -191,6 +193,11 @@ public:
                 if (v.hasMember("compliance_slope")) { compliance_slope_ = static_cast<int>(v["compliance_slope"]); }
                 else { compliance_slope_ = motor_data_[i]->cw_compliance_slope; }
                 
+                if (v.hasMember("gear_ratio"))
+		{
+		  gear_ratio_ = static_cast<std::string>(v["gear_ratio"]);
+		}
+                
                 std::string prefix = "dynamixel/" + port_namespace_ + "/" +
                                      boost::lexical_cast<std::string>(motor_id) + "/";
                 
@@ -266,6 +273,24 @@ public:
     std::string getPortNamespace() { return port_namespace_; }
     std::vector<int> getMotorIDs() { return motor_ids_; }
     double getMaxVelocity() { return max_velocity_; }
+    
+    std::vector<double> getGearRatio() 
+    { 
+      std::vector<double> ratios;
+      
+      if (!gear_ratio_.empty())
+      {
+	std::vector<std::string> strs;
+	boost::split(strs, gear_ratio_, boost::is_any_of("-"));
+	
+	if (strs.size() == 2 && std::find(strs.begin(), strs.end(), "0") == strs.end())
+	{
+	  ratios.push_back(atof(strs.at(0).c_str()));
+	  ratios.push_back(atof(strs.at(1).c_str()));
+	}  
+      }
+      return ratios;
+    }
     
     virtual void start()
     {
@@ -437,12 +462,14 @@ protected:
     int compliance_margin_;
     int compliance_slope_;
     
+    std::string gear_ratio_;
+    
     double encoder_ticks_per_radian_;
     double radians_per_encoder_tick_;
     double velocity_per_encoder_tick_;
     double motor_max_velocity_;
     int motor_model_max_encoder_;
-        
+    
     ros::Subscriber motor_states_sub_;
     ros::Subscriber joint_command_sub_;
     ros::Publisher joint_state_pub_;

@@ -20,7 +20,7 @@
                port_name: "/dev/ttyUSB0"
                baud_rate: 1000000
                min_motor_id: 1
-               max_motor_id: 6 
+               max_motor_id: 7 
                update_rate: 10 
       </rosparam>
    </node>
@@ -39,12 +39,13 @@
         args="--manager=maggie_dynamixel_manager
               --port=dynamixel_ax12
               --type=simple
-        elbow_tilt_controller
-        forearm_roll_controller
 	shoulder_pan_controller
 	shoulder_tilt_controller
 	upper_arm_roll_controller
-	wrist_tilt_controller"
+        elbow_tilt_controller
+        forearm_roll_controller
+	wrist_tilt_controller
+	wrist_roll_controller"
         output="screen" />
 
    <!-- Start the Dynamixel Joint States Publisher -->

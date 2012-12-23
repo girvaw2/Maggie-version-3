@@ -7,17 +7,26 @@
     <node name="controller_spawner" pkg="dynamixel_hardware_interface" type="controller_spawner.py"
           args="--manager=dxl_manager
                 --port=ttyUSB0
-		elbow_tilt_controller
-		forearm_roll_controller
 		shoulder_pan_controller
 		shoulder_tilt_controller
 		upper_arm_roll_controller
+		elbow_tilt_controller
+		forearm_roll_controller
 		wrist_tilt_controller
+		wrist_roll_controller
                 arm_controller"
           output="screen"/>
 
    <!-- Publish fake joint states. The planning scene service requires that all joints listed in the URDF has published joint states on the /joint_states topic. -->
    <node name="fake_joint_publisher" pkg="fake_joint_publisher" type="fake_joint_publisher.py" output="screen" />
+
+    <!-- Load the URDF/Xacro model of our robot -->
+    <param name="robot_description" command="$(find xacro)/xacro.py '$(find maggie_model)/urdf/maggie.xacro'" />
+
+    <!-- Publish the robot state -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
+        <param name="publish_frequency" value="20.0"/>
+    </node>
 
    <!-- Publish a static transform between the robot base and the world frame -->
    <node pkg="tf" type="static_transform_publisher" name="world_base_broadcaster" args="0 0 0.0325 0 0 0 /world /base_link 100" />

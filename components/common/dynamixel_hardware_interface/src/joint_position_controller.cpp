@@ -156,7 +156,7 @@ void JointPositionController::processMotorStates(const dynamixel_hardware_interf
     joint_state_.header.stamp = ros::Time(state.timestamp);
     joint_state_.target_position = convertToRadians(state.target_position);
     joint_state_.target_velocity = ((double)state.target_velocity / dynamixel_hardware_interface::DXL_MAX_VELOCITY_ENCODER) * motor_max_velocity_;
-    joint_state_.position = convertToRadians(state.position);
+    joint_state_.position = getTruePosition(convertToRadians(state.position));
     joint_state_.velocity = ((double)state.velocity / dynamixel_hardware_interface::DXL_MAX_VELOCITY_ENCODER) * motor_max_velocity_;
     joint_state_.load = (double)state.load / dynamixel_hardware_interface::DXL_MAX_LOAD_ENCODER;
     joint_state_.moving = state.moving;
@@ -259,6 +259,22 @@ uint16_t JointPositionController::velRad2Enc(double vel_rad)
     if (vel_rad > max_velocity_) { vel_rad = max_velocity_; }
     
     return std::max<uint16_t>(1, (uint16_t) round(vel_rad / velocity_per_encoder_tick_));
+}
+
+
+double JointPositionController::getTruePosition(double servo_position)
+{
+  std::vector<double> ratios = getGearRatio();
+  
+  if (ratios.empty())
+    return servo_position;
+  
+  //if (motor_ids_.at(0) == 4)
+//   {
+//     std::cout << "Ratio 1 = " + boost::lexical_cast<std::string>(ratios.at(0)) + "Ratio 2 = " + boost::lexical_cast<std::string>(ratios.at(1)) << std::endl;
+//   }
+  
+  return servo_position * ratios.at(1) / ratios.at(0); 
 }
 
 }

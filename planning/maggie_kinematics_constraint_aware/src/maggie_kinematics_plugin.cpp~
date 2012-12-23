@@ -113,7 +113,41 @@ bool MaggieKinematicsPlugin::initialize(const std::string& group_name,
                           const std::string& tip_name,
                           const double& search_discretization)
 {
-  return false;
+  setValues(group_name, base_name, tip_name,search_discretization);
+  // Get URDF XML
+  std::string urdf_xml, full_urdf_xml;
+  ros::NodeHandle node_handle;
+  ros::NodeHandle private_handle("~"+group_name);
+  ROS_INFO_STREAM("Private handle registered under " << private_handle.getNamespace());
+  node_handle.param("urdf_xml",urdf_xml,std::string("robot_description"));
+  node_handle.searchParam(urdf_xml,full_urdf_xml);
+  ROS_DEBUG("Reading xml file from parameter server");
+  std::string result;
+  if (!node_handle.getParam(full_urdf_xml, result)) {
+    ROS_FATAL("Could not load the xml from parameter server: %s", urdf_xml.c_str());
+    return false;
+  }
+  // Load and Read Models
+//   if (!loadModel(result)) {
+//     ROS_FATAL("Could not load models!");
+//     return false;
+//   }
+
+  // Get Solver Parameters
+//   int max_iterations;
+//   double epsilon;
+
+//   private_handle.param("max_solver_iterations", max_iterations, 5000);
+//   private_handle.param("max_search_iterations", max_search_iterations_, 30);
+//   private_handle.param("epsilon", epsilon, 1e-5);
+
+  // Build Solvers
+//   fk_solver_.reset(new KDL::ChainFkSolverPos_recursive(kdl_chain_));
+//   ik_solver_vel_.reset(new KDL::ChainIkSolverVel_pinv(kdl_chain_));
+//   ik_solver_pos_.reset(new KDL::ChainIkSolverPos_NR_JL(kdl_chain_, joint_min_, joint_max_,*fk_solver_, *ik_solver_vel_, max_iterations, epsilon));
+  active_ = true;
+  return true;
+
 }
 
 bool MaggieKinematicsPlugin::getPositionIK(const geometry_msgs::Pose &ik_pose,
@@ -137,7 +171,7 @@ bool MaggieKinematicsPlugin::getPositionIK(const geometry_msgs::Pose &ik_pose,
   srv.request.pose_stamped.pose = ik_pose;
   srv.request.pose_stamped.header.frame_id = root_name_;
   srv.request.pose_stamped.header.stamp = ros::Time::now();
-  srv.request.iktype = "TranslationDirection5D";
+  srv.request.iktype = "Transform6D";
   srv.request.filteroptions = 0;
 
   ik_service_.call(srv);
@@ -373,7 +407,6 @@ bool MaggieKinematicsPlugin::searchPositionIK(const geometry_msgs::Pose &ik_pose
   return searchPositionIK(ik_pose,
                    ik_seed_state,
                    timeout,
-                   consistency_limit,
                    solution,
                    desired_pose_callback,
                    solution_callback,

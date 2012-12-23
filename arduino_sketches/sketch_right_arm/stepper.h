@@ -15,9 +15,9 @@
 #define READ_DATA      0x02  
 #define WRITE_DATA     0x03
 
-#define SHOULDER_PAN_MOTOR    3
-#define SHOULDER_TILT_MOTOR   4
-#define UPPER_ARM_ROLL_MOTOR  5
+#define SHOULDER_PAN_MOTOR    1
+#define SHOULDER_TILT_MOTOR   2
+
 
 #define GOAL_POSITION          0x1E
 #define MOVING_SPEED           0x20

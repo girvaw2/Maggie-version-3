@@ -482,7 +482,7 @@ void ControllerManager::checkDeps()
 //   	    std::string sInputString;
 // 	    // Wait for input from stdin (the keyboard)
 // 	    std::cin >> sInputString;
-    ::usleep(100000);
+    ::usleep(500000);
   
     std::set<std::string> loaded_controllers;
     std::map<std::string, controller::SingleJointController*>::iterator c_it;

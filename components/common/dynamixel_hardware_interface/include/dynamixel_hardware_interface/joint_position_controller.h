@@ -64,7 +64,10 @@ public:
     bool setVelocity(double velocity);
     bool processSetVelocity(dynamixel_hardware_interface::SetVelocity::Request& req,
                             dynamixel_hardware_interface::SetVelocity::Request& res);
-    
+
+private:
+    double getTruePosition(double servo_position);
+  
 private:
     uint16_t posRad2Enc(double pos_rad);
     uint16_t velRad2Enc(double vel_rad);    

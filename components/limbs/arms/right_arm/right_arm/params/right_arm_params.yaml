@@ -1,32 +1,4 @@
-dynamixels: ['elbow_tilt_joint', 'forearm_roll_joint', 'shoulder_pan_joint', 'shoulder_tilt_joint', 'upper_arm_roll_joint', 'wrist_tilt_joint']
-
-elbow_tilt_controller:
-    controller:
-        package: dynamixel_controllers
-        module: joint_position_controller
-        type: JointPositionController
-    joint_name: elbow_tilt_joint
-    joint_speed: 2.0 
-    joint_max_speed: 2.0 
-    motor:
-        id: 1
-        init: 0 
-        min:  0 
-        max: 1023
-
-forearm_roll_controller:
-    controller:
-        package: dynamixel_controllers
-        module: joint_position_controller
-        type: JointPositionController
-    joint_name: forearm_roll_joint
-    joint_speed: 2.0 
-    joint_max_speed: 1
-    motor:
-        id: 2
-        init: 512
-        min: 300
-        max: 800
+dynamixels: ['shoulder_pan_joint', 'shoulder_tilt_joint', 'upper_arm_roll_joint', 'elbow_tilt_joint', 'forearm_roll_joint', 'wrist_tilt_joint', 'wrist_roll_joint']
 
 shoulder_pan_controller:
     controller:
@@ -37,7 +9,7 @@ shoulder_pan_controller:
     joint_speed: 0.5 
     joint_max_speed: 1
     motor:
-        id: 3 
+        id: 1 
         init: 512
         min: 400
         max: 600
@@ -51,7 +23,7 @@ shoulder_tilt_controller:
     joint_speed: 0.5 
     joint_max_speed: 1
     motor:
-        id: 4 
+        id: 2 
         init: 512
         min: 370
         max: 670
@@ -65,10 +37,40 @@ upper_arm_roll_controller:
     joint_speed: 0.5 
     joint_max_speed: 1
     motor:
-        id: 5 
+        id: 3 
         init: 512
         min: 400
         max: 600
+
+elbow_tilt_controller:
+    controller:
+        package: dynamixel_controllers
+        module: joint_position_controller
+        type: JointPositionController
+    joint_name: elbow_tilt_joint
+    joint_speed: 2.0 
+    joint_max_speed: 2.0 
+    motor:
+        id: 4 
+        init: 0 
+        min:  0 
+        max: 1023
+
+forearm_roll_controller:
+    controller:
+        package: dynamixel_controllers
+        module: joint_position_controller
+        type: JointPositionController
+    joint_name: forearm_roll_joint
+    joint_speed: 2.0 
+    joint_max_speed: 1
+    motor:
+        id: 5 
+        init: 512
+        min: 300
+        max: 800
+
+
 
 wrist_tilt_controller:
     controller:
@@ -83,3 +85,18 @@ wrist_tilt_controller:
         init: 512
         min: 0
         max: 1023
+
+wrist_roll_controller:
+    controller:
+        package: dynamixel_controllers
+        module: joint_position_controller
+        type: JointPositionController
+    joint_name: wrist_roll_joint
+    joint_speed: 0.5 
+    joint_max_speed: 1
+    motor:
+        id: 7 
+        init: 512
+        min: 0
+        max: 1023
+

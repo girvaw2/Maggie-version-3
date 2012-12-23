@@ -13,8 +13,10 @@ ShoulderPanStepper::ShoulderPanStepper(byte ID) : Stepper (ID)
   enablePin = 24;
   directionPin = 26;
   
+  PORTA |= 0x04; // Set the enable pin to HIGH
+  
   centrePositionInDynamixelUnits = 512;
-  centrePositionInSteps = 432; // 50 degrees. 
+  centrePositionInSteps = 820; // 95 degrees 432; // 50 degrees. 
   referencePositionFromCentreInSteps = 740; 
   
   timerSpeedCount = 1000; // 4ms pulse (with 64 x prescaler) - REM stepper only steps on every 2nd pulse, so this equates to ~3.94 r/s (14.475 degrees/second or 2.4125 rpm).
@@ -420,7 +422,7 @@ void ShoulderPanStepper::disableTimer()
 {
     TCCR3B = 0;
     TIMSK3 &= 0xFD;     // Disable timer 3 OC interrupt A
-    PORTA &= 0xFB;      // Disable enable pin - active HIGH
+    //PORTA &= 0xFB;      // Disable enable pin - active HIGH
     PORTA |= 0x01;      // Set the clock pin to HIGH
     TCNT3 = 0;
     isMoving = false;

@@ -457,7 +457,7 @@ void ControllerManager::publishDiagnosticInformation()
                 joint_status.name = "Joint Controller " + it->second->getName();
                 joint_status.add("Moving", state.moving ? "True" : "False");
                 joint_status.add("Target Position", state.target_position);
-                joint_status.add("Target Velocity", state.target_velocity);
+                joint_status.add("Target Velocity", 123); //state.target_velocity);
                 joint_status.add("Position", state.position);
                 joint_status.add("Velocity", state.velocity);
                 joint_status.add("Position Error", state.position - state.target_position);

@@ -48,6 +48,24 @@ maggie_kinematics_constraint_aware/maggie_openrave_kinematics.h
 pluginlib/class_list_macros.h
 -
 
+/home/billy/robotics/maggie/planning/maggie_kinematics_constraint_aware/src/maggie_openrave_kinematics.cpp
+ros/ros.h
+-
+urdf/joint.h
+-
+urdf/model.h
+-
+kinematics_msgs/GetConstraintAwarePositionIK.h
+-
+kinematics_msgs/GetPositionIK.h
+-
+kinematics_msgs/GetKinematicSolverInfo.h
+-
+motion_planning_msgs/JointLimits.h
+-
+orrosplanning/IK.h
+-
+
 /home/billy/robotics/temp/armnavigation/arm_kinematics_constraint_aware/include/arm_kinematics_constraint_aware/arm_kinematics_constraint_aware_utils.h
 ros/ros.h
 -
@@ -521,6 +539,28 @@ arm_navigation_msgs/ArmNavigationErrorCodes.h
 /home/billy/robotics/temp/armnavigation/kinematics_msgs/srv_gen/cpp/include/kinematics_msgs/arm_navigation_msgs/ArmNavigationErrorCodes.h
 
 /home/billy/robotics/temp/motion_planning_msgs/msg_gen/cpp/include/motion_planning_msgs/ArmNavigationErrorCodes.h
+string
+-
+vector
+-
+map
+-
+ostream
+-
+ros/serialization.h
+/home/billy/robotics/temp/motion_planning_msgs/msg_gen/cpp/include/motion_planning_msgs/ros/serialization.h
+ros/builtin_message_traits.h
+/home/billy/robotics/temp/motion_planning_msgs/msg_gen/cpp/include/motion_planning_msgs/ros/builtin_message_traits.h
+ros/message_operations.h
+/home/billy/robotics/temp/motion_planning_msgs/msg_gen/cpp/include/motion_planning_msgs/ros/message_operations.h
+ros/time.h
+/home/billy/robotics/temp/motion_planning_msgs/msg_gen/cpp/include/motion_planning_msgs/ros/time.h
+ros/macros.h
+/home/billy/robotics/temp/motion_planning_msgs/msg_gen/cpp/include/motion_planning_msgs/ros/macros.h
+ros/assert.h
+/home/billy/robotics/temp/motion_planning_msgs/msg_gen/cpp/include/motion_planning_msgs/ros/assert.h
+
+/home/billy/robotics/temp/motion_planning_msgs/msg_gen/cpp/include/motion_planning_msgs/JointLimits.h
 string
 -
 vector
@@ -2083,6 +2123,10 @@ string
 -
 urdf/model.h
 -
+
+/opt/ros/fuerte/stacks/robot_model/urdf/include/urdf/joint.h
+urdf_interface/joint.h
+/opt/ros/fuerte/stacks/robot_model/urdf/include/urdf/urdf_interface/joint.h
 
 /opt/ros/fuerte/stacks/robot_model/urdf/include/urdf/model.h
 string

@@ -17,7 +17,7 @@ ShoulderTiltStepper::ShoulderTiltStepper(byte ID) : Stepper (ID)
   PORTC |= 0x80;
   
   centrePositionInDynamixelUnits = 512;
-  centrePositionInSteps = 432;  
+  centrePositionInSteps = 820; // 95 degrees 432;  
   referencePositionFromCentreInSteps = 450; 
   
   timerSpeedCount = 1000; // 4ms pulse (with 64 x prescaler) - REM stepper only steps on every 2nd pulse, so this equates to ~3.94 r/s (14.475 degrees/second or 2.4125 rpm).

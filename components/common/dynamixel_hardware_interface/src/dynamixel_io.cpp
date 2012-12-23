@@ -1059,6 +1059,8 @@ bool DynamixelIO::setPosition(int servo_id, uint16_t position)
     data.push_back(position >> 8);  // hi_byte
 
     std::vector<uint8_t> response;
+    
+    std::cout << "SETTING POSITION!!!" << std::endl;
 
     if (write(servo_id, DXL_GOAL_POSITION_L, data, response))
     {
@@ -1620,17 +1622,17 @@ bool DynamixelIO::syncWrite(int address,
 
     packet[packet_length-1] = checksum;
     
-    // BG
-/*
-    {
-      char str[1000];
-      for (int i=0; i <packet_length; i++)
-      {
-	sprintf (str + (i*4), "%03d ", packet[i]);
-      }
-      ROS_INFO("syncWrite packet string = %s", str);
-    }
-*/
+// BG
+
+//     {
+//       char str[1000];
+//       for (int i=0; i <packet_length; i++)
+//       {
+// 	sprintf (str + (i*4), "%03d ", packet[i]);
+//       }
+//       ROS_INFO("syncWrite packet string = %s", str);
+//     }
+
     pthread_mutex_lock(&serial_mutex_);
     bool success = writePacket(packet, packet_length);
     pthread_mutex_unlock(&serial_mutex_);

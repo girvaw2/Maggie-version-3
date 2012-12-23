@@ -4,7 +4,7 @@ serial_ports:
         port_name: /dev/ttyUSB0
         baud_rate: 1000000
         min_motor_id: 1
-        max_motor_id: 6 
+        max_motor_id: 7 
         update_rate: 10
 #    ttyUSB1:
 #        port_name: /dev/ttyUSB1
