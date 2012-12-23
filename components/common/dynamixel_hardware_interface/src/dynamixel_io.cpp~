@@ -1622,7 +1622,7 @@ bool DynamixelIO::syncWrite(int address,
 
     packet[packet_length-1] = checksum;
     
-    // BG
+// BG
 
 //     {
 //       char str[1000];

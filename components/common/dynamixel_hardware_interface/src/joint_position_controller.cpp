@@ -154,10 +154,10 @@ void JointPositionController::processMotorStates(const dynamixel_hardware_interf
     }
     
     joint_state_.header.stamp = ros::Time(state.timestamp);
-    joint_state_.target_position = convertToRadians(state.target_position);
-    joint_state_.target_velocity = ((double)state.target_velocity / dynamixel_hardware_interface::DXL_MAX_VELOCITY_ENCODER) * motor_max_velocity_;
-    joint_state_.position = getTruePosition(convertToRadians(state.position));
-    joint_state_.velocity = ((double)state.velocity / dynamixel_hardware_interface::DXL_MAX_VELOCITY_ENCODER) * motor_max_velocity_;
+    joint_state_.target_position = getActualJointPosition(convertToRadians(state.target_position));
+    joint_state_.target_velocity = getActualJointVelocity(((double)state.target_velocity / dynamixel_hardware_interface::DXL_MAX_VELOCITY_ENCODER) * motor_max_velocity_);
+    joint_state_.position = getActualJointPosition(convertToRadians(state.position));
+    joint_state_.velocity = getActualJointVelocity(((double)state.velocity / dynamixel_hardware_interface::DXL_MAX_VELOCITY_ENCODER) * motor_max_velocity_);
     joint_state_.load = (double)state.load / dynamixel_hardware_interface::DXL_MAX_LOAD_ENCODER;
     joint_state_.moving = state.moving;
     
@@ -185,7 +185,8 @@ void JointPositionController::publishJointStates(const dynamixel_hardware_interf
 
 void JointPositionController::processCommand(const std_msgs::Float64ConstPtr& msg)
 {
-    uint16_t pos_enc = posRad2Enc(msg->data);
+    uint16_t pos_enc = posRad2Enc(getTargetServoPosition(msg->data));
+    
     std::vector<std::vector<int> > mcv;
     
     for (size_t i = 0; i < motor_ids_.size(); ++i)
@@ -223,7 +224,7 @@ void JointPositionController::processCommand(const std_msgs::Float64ConstPtr& ms
 
 bool JointPositionController::setVelocity(double velocity)
 {
-    uint16_t vel_enc = velRad2Enc(velocity);
+    uint16_t vel_enc = velRad2Enc(getTargetServoVelocity(velocity));
     std::vector<std::vector<int> > mcv;
     
     for (size_t i = 0; i < motor_ids_.size(); ++i)
@@ -262,19 +263,44 @@ uint16_t JointPositionController::velRad2Enc(double vel_rad)
 }
 
 
-double JointPositionController::getTruePosition(double servo_position)
+double JointPositionController::getActualJointPosition(double actual_servo_position)
 {
   std::vector<double> ratios = getGearRatio();
   
   if (ratios.empty())
-    return servo_position;
+    return actual_servo_position;
+ 
+  return actual_servo_position * ratios.at(1) / ratios.at(0); 
+}
+
+double JointPositionController::getTargetServoPosition(double target_joint_position)
+{
+  std::vector<double> ratios = getGearRatio();
   
-  //if (motor_ids_.at(0) == 4)
-//   {
-//     std::cout << "Ratio 1 = " + boost::lexical_cast<std::string>(ratios.at(0)) + "Ratio 2 = " + boost::lexical_cast<std::string>(ratios.at(1)) << std::endl;
-//   }
+  if (ratios.empty())
+    return target_joint_position;
+ 
+  return target_joint_position * ratios.at(0) / ratios.at(1); 
+}
+
+double JointPositionController::getActualJointVelocity(double actual_servo_velocity)
+{
+  std::vector<double> ratios = getGearRatio();
   
-  return servo_position * ratios.at(1) / ratios.at(0); 
+  if (ratios.empty())
+    return actual_servo_velocity;
+ 
+  return actual_servo_velocity * ratios.at(1) / ratios.at(0); 
+}
+
+double JointPositionController::getTargetServoVelocity(double target_joint_velocity)
+{
+  std::vector<double> ratios = getGearRatio();
+  
+  if (ratios.empty())
+    return target_joint_velocity;
+ 
+  return target_joint_velocity * ratios.at(0) / ratios.at(1); 
 }
 
 }

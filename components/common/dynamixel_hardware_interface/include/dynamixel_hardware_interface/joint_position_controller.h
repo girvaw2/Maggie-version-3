@@ -66,8 +66,11 @@ public:
                             dynamixel_hardware_interface::SetVelocity::Request& res);
 
 private:
-    double getTruePosition(double servo_position);
-  
+    double getActualJointPosition(double actual_servo_position);
+    double getTargetServoPosition(double target_joint_position);
+    double getActualJointVelocity(double actual_servo_velocity);
+    double getTargetServoVelocity(double target_joint_velocity);
+    
 private:
     uint16_t posRad2Enc(double pos_rad);
     uint16_t velRad2Enc(double vel_rad);    
