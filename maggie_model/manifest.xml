@@ -1,0 +1,17 @@
+<package>
+  <description brief="maggie_model">
+
+     maggie_model
+
+  </description>
+  <author>billy</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/maggie_model</url>
+  <depend package="roscpp"/>
+  <depend package="rospy"/>
+  <depend package="sensor_msgs"/>
+
+</package>
+
+
