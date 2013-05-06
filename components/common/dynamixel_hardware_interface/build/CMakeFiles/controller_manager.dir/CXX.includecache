@@ -125,6 +125,8 @@ std_srvs/Empty.h
 -
 sensor_msgs/JointState.h
 -
+boost/algorithm/string.hpp
+-
 
 ../msg_gen/cpp/include/dynamixel_hardware_interface/JointState.h
 string

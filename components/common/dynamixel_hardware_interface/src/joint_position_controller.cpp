@@ -101,7 +101,14 @@ std::vector<std::vector<int> > JointPositionController::getRawMotorCommands(doub
     for (size_t i = 0; i < motor_ids_.size(); ++i)
     {
         int motor_id = motor_ids_[i];
-        
+
+	std::vector<double> ratios = getGearRatio();
+	if (ratios.empty() == false)
+	{
+	  pos_enc = posRad2Enc (position * ratios.at(0) / ratios.at(1)); 
+	  vel_enc = velRad2Enc(velocity  * ratios.at(0) / ratios.at(1)); 
+	}
+	
         std::vector<int> pair;
         pair.push_back(motor_id);
         

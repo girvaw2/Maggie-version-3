@@ -132,12 +132,12 @@
 		<xacro:blue1 />
 	</xacro:my_box>
 	
-	<xacro:my_box name="shoulder_tilt_link" lwh="0.1 0.003 0.02" xyz="0.05 0 0" rpy="0 0 0" mass="0.5" material="Gazebo/WhiteEmissive">
-		<xacro:green1 />
+	<xacro:my_box name="shoulder_tilt_link" lwh="0.15 0.003 0.02" xyz="0.075 0 0" rpy="0 0 0" mass="0.5" material="Gazebo/WhiteEmissive">
+		<xacro:red1 />
 	</xacro:my_box>
 	
-	<xacro:my_cylinder name="upper_arm_link" l="0.224" r="0.025" xyz="0.135 0 0" rpy="0 1.57 0" mass="0.5" material="Gazebo/WhiteEmissive">
-		<xacro:red1 />
+	<xacro:my_cylinder name="upper_arm_link" l="0.08" r="0.025" xyz="0.035 0 0" rpy="0 1.57 0" mass="0.5" material="Gazebo/WhiteEmissive">
+		<xacro:blue1 />
 	</xacro:my_cylinder>
 	
 	<xacro:my_box name="elbow_tilt_link" lwh="0.1 0.003 0.03" xyz="0.05 0 0" rpy="0 0 0" mass="0.5" material="Gazebo/WhiteEmissive">
@@ -148,15 +148,30 @@
 		<xacro:grey1 />
 	</xacro:my_cylinder>
 	
-	<xacro:my_box name="wrist_tilt_link" lwh="0.03 0.003 0.03" xyz="0.015 0 0" rpy="0 0 0" mass="0.5" material="Gazebo/WhiteEmissive">
+	<xacro:my_box name="wrist_tilt_link" lwh="0.0355 0.003 0.03" xyz="0.01775 0 0" rpy="0 0 0" mass="0.5" material="Gazebo/WhiteEmissive">
 		<xacro:blue1 />
 	</xacro:my_box>
 	
-	<xacro:my_box name="wrist_roll_link" lwh="0.071 0.003 0.03" xyz="0.03 0 0" rpy="0 0 0" mass="0.5" material="Gazebo/WhiteEmissive">
+	<xacro:my_box name="wrist_roll_link" lwh="0.02 0.003 0.03" xyz="0.01 0 0" rpy="0 0 0" mass="0.5" material="Gazebo/WhiteEmissive">
 		<xacro:red1 />
 	</xacro:my_box>
 	
-<!--	<xacro:pr2_gripper_v0 reflect="-1.0" side="r" parent="wrist_roll_link"
+	<xacro:my_box name="hand_link" lwh="0.01 0.01 0.005" xyz="0.005 0 0" rpy="0 0 0" mass="0.001" material="Gazebo/WhiteEmissive">
+	  <xacro:green1 />
+	</xacro:my_box>
+	
+<!--	<xacro:my_box name="hand_link" lwh="0.03 0.01 0.064" xyz="0 0 -0.032" rpy="0 0 0" mass="0.1" material="Gazebo/WhiteEmissive">
+	  <xacro:grey1 />
+	</xacro:my_box>-->
+
+<!--	<xacro:my_box name="finger_link" lwh="0.01 0.01 0.005" xyz="0 0 0" rpy="0 0 0" mass="0.001" material="Gazebo/WhiteEmissive">
+	  <xacro:green1 />
+	</xacro:my_box>-->
+ 
+	
+
+	
+	<!--xacro:pr2_gripper_v0 reflect="-1.0" side="r" parent="wrist_roll_link"
                screw_reduction="${4.0/1000.0}"
                gear_ratio="${(729.0/25.0)*(22.0/16.0)}"
                theta0="${3.6029*M_PI/180.0}"
@@ -168,7 +183,7 @@
                b="${43.3849/1000.0}"
                r="${91.5/1000.0}" >
 	<origin xyz="0 0 0" rpy="0 0 0" />
-      </xacro:pr2_gripper_v0>-->
+      </xacro:pr2_gripper_v0-->
 	
 	
 	<!-- head links -->
@@ -276,20 +291,32 @@
 
 	
 	<!-- arm joints -->
+<!--        <joint name="finger_joint" type="fixed">
+	  <parent link="hand_link" />
+	  <child link="finger_link" />
+	  <origin xyz="0 0 -0.064" rpy="0 0 0" />
+        </joint>-->
+	
+	<joint name="hand_joint" type="fixed">
+	  <parent link="wrist_roll_link" />
+	  <child link="hand_link" />
+	  <origin xyz="0.02 0 0" rpy="0 0 0" />
+        </joint>
+	
 	<joint name="wrist_roll_joint" type="revolute">
 	  <parent link="wrist_tilt_link" />
 	  <child link="wrist_roll_link" />
 	  <axis xyz="1 0 0"/>
-	  <origin xyz="0.035 0 0" rpy="0 0 0" />
-	  <limit lower="-1.0" upper="1.0" effort="1.0" velocity="1.0" />
+	  <origin xyz="0.0351 0 0" rpy="0 0 0" />
+	  <limit lower="-2.61" upper="2.61" effort="1.0" velocity="1.0" />
 	</joint>
 	
 	<joint name="wrist_tilt_joint" type="revolute">
 	  <parent link="forearm_link" />
 	  <child link="wrist_tilt_link" />
-	  <axis xyz="0 -1 0"/>
+	  <axis xyz="0 1 0"/>
 	  <origin xyz="0.151 0 0" rpy="0 0 0" />
-	  <limit lower="-1.0" upper="1.0" effort="1.0" velocity="1.0" />
+	  <limit lower="-1.57" upper="1.57" effort="1.0" velocity="1.0" />
 	</joint>
 	
 	<joint name="forearm_roll_joint" type="revolute">
@@ -297,15 +324,15 @@
 	  <child link="forearm_link" />
 	  <axis xyz="1 0 0"/>
 	  <origin xyz="0.1 0 0" rpy="0 0 0" />
-	  <limit lower="-1.0" upper="1.0" effort="1.0" velocity="1.0" />
+	  <limit lower="-2.61" upper="2.61" effort="1.0" velocity="1.0" />
 	</joint>
   
 	<joint name="elbow_tilt_joint" type="revolute">
 	  <parent link="upper_arm_link" />
 	  <child link="elbow_tilt_link" />
 	  <axis xyz="0 1 0"/>
-	  <origin xyz="0.27 0 0" rpy="0 -1.57 0" />
-	  <limit lower="-1.0" upper="1.0" effort="1.0" velocity="1.0" />
+	  <origin xyz="0.07 0 0" rpy="0 -1.57 0" />
+	  <limit lower="-2.61" upper="2.61" effort="1.0" velocity="1.0" />
 	</joint>
 	
 	<joint name="upper_arm_roll_joint" type="revolute">
@@ -313,15 +340,15 @@
 	  <child link="upper_arm_link" />
 	  <axis xyz="1 0 0"/>
 	  <origin xyz="0.1 0 0" rpy="0 0 0" />
-	  <limit lower="-1.0" upper="1.0" effort="1.0" velocity="1.0" />
+	  <limit lower="-2.61" upper="2.61" effort="1.0" velocity="1.0" />
 	</joint>
 
 	<joint name="shoulder_tilt_joint" type="revolute">
 	  <parent link="shoulder_tilt_support_link" />
 	  <child link="shoulder_tilt_link" />
 	  <axis xyz="0 1 0"/>
-	  <origin xyz="0.035 -0.05 0" rpy="0 0 0" />
-	  <limit lower="-1.0" upper="1.0" effort="1.0" velocity="1.0" />
+	  <origin xyz="0.03 -0.05 0" rpy="0 0 0" />
+	  <limit lower="-1.57" upper="1.57" effort="1.0" velocity="1.0" />
 	</joint>
 
 	<joint name="shoulder_tilt_support_joint" type="fixed">
@@ -335,7 +362,7 @@
 	  <child link="shoulder_pan_link" />
 	  <axis xyz="0.0 0 1"/>
 	  <origin xyz="0.03 0 0" rpy="0 0 0" />
-	  <limit lower="-1.0" upper="1.0" effort="1.0" velocity="1.0" />
+	  <limit lower="-1.57" upper="1.57" effort="1.0" velocity="1.0" />
 	</joint>
 	
 	<joint name="shoulder_pan_support_joint" type="fixed">

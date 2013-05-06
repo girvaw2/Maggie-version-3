@@ -1,7 +1,0 @@
-<library path="lib/libmaggie_openrave_kinematics">
-  <class name="maggie_kinematics_constraint_aware/MaggieKinematicsPlugin" type="maggie_kinematics_constraint_aware::MaggieKinematicsPlugin" base_class_type="kinematics::KinematicsBase">
-    <description>
-      A plugin implementation of the Maggie's kinematics based on the kinematics_base interface and using OpenRave IK and the urdf-based arm_kinematics FK</description>
-  </class>
-</library>
-

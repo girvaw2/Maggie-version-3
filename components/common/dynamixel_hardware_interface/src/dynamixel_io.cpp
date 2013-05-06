@@ -1195,16 +1195,6 @@ bool DynamixelIO::setMultiPositionVelocity(std::vector<std::vector<int> > value_
         int position = value_tuples[i][1];
         int velocity = value_tuples[i][2];
 	
-	if (motor_id == 3) // || motor_id == 4 || motor_id == 5)
-	{
-	  //ros::Time ts;
-	  ROS_INFO("motor_id=%d position=%d velocity=%d time=%f", motor_id, position, velocity, ros::Time::now().toSec());
-	  //velocity = 22;
-	}
-	
-// 	if (motor_id == 4 || motor_id == 5)
-// 	  return true;
-
         DynamixelData* dd = findCachedParameters(motor_id);
         dd->target_position = position;
         dd->target_velocity = velocity;

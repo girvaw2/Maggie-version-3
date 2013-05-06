@@ -193,7 +193,7 @@ bool isServoMotor(byte motorID)
 
 bool isStepperMotor(byte motorID)
 {
-  return (motorID == SHOULDER_PAN_MOTOR || motorID == SHOULDER_TILT_MOTOR); 
+  return false; //(motorID == SHOULDER_TILT_MOTOR); 
 }
 
 bool isBroadcastMotor(byte motorID)
