@@ -18,11 +18,6 @@ public:
 
 private Q_SLOTS:
 
-
-    void on_pushButton_clicked();
-
-    void on_pushButton_pressed();
-
 private:
     Ui::Widget *ui;
 };
