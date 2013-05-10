@@ -3,20 +3,17 @@
 ParkArm::ParkArm()
 {
     nodeHandle = (ros::NodeHandle *)0;
-
-    int argc;
-    char ** argv = ((char **)0);
-    ros::init(argc, argv, "listener");
-}
-
-void chatterCallback(const dynamixel_hardware_interface::JointState::ConstPtr& msg)
-{
-  std::cout << "hello world" << std::endl;
 }
 
 void ParkArm::park()
 {
-    initialiseVelocity();
+    setVelocity("/wrist_roll_controller", 0.5);
+    setVelocity("/wrist_tilt_controller", 0.5);
+    setVelocity("/forearm_roll_controller", 0.5);
+    setVelocity("/elbow_tilt_controller", 0.25);
+    setVelocity("/upper_arm_roll_controller", 0.25);
+    setVelocity("/shoulder_tilt_controller", 0.25);
+    setVelocity("/shoulder_pan_controller", 0.25);
 
     publish("/wrist_roll_controller/command",0);
     publish("/wrist_tilt_controller/command",0.1);
@@ -25,21 +22,14 @@ void ParkArm::park()
     publish("/upper_arm_roll_controller/command",0);
     publish("/shoulder_tilt_controller/command",-0.5);
     publish("/shoulder_pan_controller/command",1.53);
-
 }
 
-void ParkArm::initialiseVelocity()
+void ParkArm::setVelocity(std::string controller, double velocity)
 {
-    ros::ServiceClient client = getNodeHandle()->serviceClient<dynamixel_hardware_interface::SetVelocity>("/wrist_tilt_controller/set_velocity");
+    ros::ServiceClient client = getNodeHandle()->serviceClient<dynamixel_hardware_interface::SetVelocity>(controller + std::string("/set_velocity"));
     dynamixel_hardware_interface::SetVelocity srv;
-    srv.request.velocity = 0.1;
+    srv.request.velocity = velocity;
     client.call(srv);
-}
-
-void ParkArm::subscribe()
-{
-  ros::Subscriber sub = getNodeHandle()->subscribe("/wrist_roll_controller/state", 1000, chatterCallback);
-  ros::spin();
 }
 
 void ParkArm::publish(std::string topic, double position)

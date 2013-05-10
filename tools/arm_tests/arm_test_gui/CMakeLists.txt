@@ -31,9 +31,10 @@ QT4_WRAP_UI(uis_h ui/widget.ui)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 rosbuild_add_library(park_arm src/parkarm.cpp)
+rosbuild_add_library(seed_arm src/seedarm.cpp)
 
-rosbuild_add_executable(arm_test_gui src/main.cpp ${uis_h} ${qt_srcs} ${qt_moc_srcs} src/parkarm.cpp)
-target_link_libraries(arm_test_gui ${QT_LIBRARIES} park_arm)
+rosbuild_add_executable(arm_test_gui src/main.cpp ${uis_h} ${qt_srcs} ${qt_moc_srcs} src/parkarm.cpp src/seedarm.cpp)
+target_link_libraries(arm_test_gui ${QT_LIBRARIES} park_arm seed_arm)
 
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)

@@ -20,6 +20,8 @@ private Q_SLOTS:
 
     void on_parkArmPushButton_clicked();
 
+    void on_seedArmPushButton_clicked();
+
 private:
     Ui::Widget *ui;
 };

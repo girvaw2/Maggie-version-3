@@ -13,9 +13,8 @@ public:
     void park();
 
 private:
-    void initialiseVelocity();
+    void setVelocity(std::string controller, double velocity);
 
-    void subscribe();
     void publish(std::string topic, double position);
     ros::NodeHandle *getNodeHandle();
 
