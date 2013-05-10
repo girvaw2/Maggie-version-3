@@ -53,37 +53,6 @@ void ParkArm::publish(std::string topic, double position)
   }
 }
 
-
-//void ParkArm::publish()
-//{
-//  ros::Publisher wrist_roll_pub = getNodeHandle()->advertise<std_msgs::Float64>("/wrist_roll_controller/command", 1000);
-//  ros::Publisher wrist_tilt_pub = getNodeHandle()->advertise<std_msgs::Float64>("/wrist_tilt_controller/command", 1000);
-
-//  double position = 0;
-//  while (ros::ok())
-//  {
-//    /**
-//     * This is a message object. You stuff it with data, and then publish it.
-//     */
-//    std_msgs::Float64 msg;
-//    msg.data = position;
-
-//    wrist_roll_pub.publish(msg);
-//    wrist_tilt_pub.publish(msg);
-
-
-
-//    position += 0.1;
-
-//    ros::spinOnce();
-
-//    if (position > 1.1)
-//      break;
-
-//    ::sleep(1);
-//  }
-//}
-
 ros::NodeHandle *ParkArm::getNodeHandle()
 {
     if (nodeHandle == (ros::NodeHandle *)0)
