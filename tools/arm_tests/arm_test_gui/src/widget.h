@@ -22,6 +22,8 @@ private Q_SLOTS:
 
     void on_seedArmPushButton_clicked();
 
+    void on_moveToIKPushButton_clicked();
+
 private:
     Ui::Widget *ui;
 };

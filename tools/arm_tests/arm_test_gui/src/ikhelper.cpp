@@ -2,6 +2,10 @@
 
 IKHelper::IKHelper()
 {
+
+    nodeHandle = (ros::NodeHandle *)0;
+    getNodeHandle(); // need to initialse nodeHandle for call to waitForService
+
     ros::service::waitForService(SET_PLANNING_SCENE_DIFF_NAME);
 
     ros::ServiceClient set_planning_scene_diff_client = getNodeHandle()->serviceClient<arm_navigation_msgs::SetPlanningSceneDiff>(SET_PLANNING_SCENE_DIFF_NAME);
@@ -14,8 +18,6 @@ IKHelper::IKHelper()
         ROS_WARN("Can't get planning scene");
         return;
     }
-    /************************************/
-
 
     //create a client function for the IK service
     ik_client = getNodeHandle()->serviceClient<kinematics_msgs::GetPositionIK>(ARM_IK_NAME, true);
@@ -34,23 +36,6 @@ IKHelper::IKHelper()
     {
         ROS_INFO("Waiting for the joint_trajectory_action action server to come up");
     }
-
-    //register a service to input desired Cartesian trajectories
-    //service = node.advertiseService("execute_cartesian_ik_trajectory", &IKTrajectoryExecutor::execute_cartesian_ik_trajectory, this);
-
-    //have to specify the order of the joints we're sending in our
-    //joint trajectory goal, even if they're already on the param server
-
-    goal.trajectory.joint_names.push_back("shoulder_pan_joint");
-    goal.trajectory.joint_names.push_back("shoulder_tilt_joint");
-    goal.trajectory.joint_names.push_back("upper_arm_roll_joint");
-    goal.trajectory.joint_names.push_back("elbow_tilt_joint");
-    goal.trajectory.joint_names.push_back("forearm_roll_joint");
-    goal.trajectory.joint_names.push_back("wrist_tilt_joint");
-    goal.trajectory.joint_names.push_back("wrist_roll_joint");
-
-
-    test();
 }
 
 IKHelper::~IKHelper()
@@ -58,51 +43,22 @@ IKHelper::~IKHelper()
     delete action_client;
 }
 
-
-void IKHelper::test ()
+void IKHelper::moveToGoal(geometry_msgs::Pose &pose)
 {
     arm_test_gui::ExecuteCartesianIKTrajectory::Request req;
     arm_test_gui::ExecuteCartesianIKTrajectory::Response res;
 
     req.header.frame_id = "torso_link";
-
-    double start_position[] = {0.45312, 0.0461981, 0.175225};
-    double start_orientation[] = {0.655082, -0.393060, 0.095405, 0.638176};
-
-    double end_position[] = {0.45312, -0.0461981, 0.275225};
-    double end_orientation[] = {0.655082, -0.393060, 0.095405, 0.638176};
-
-    geometry_msgs::Pose pose;
-
-    pose.position.x = start_position[0];
-    pose.position.y = start_position[1];
-    pose.position.z = start_position[2];
-
-    pose.orientation.x = start_orientation[0];
-    pose.orientation.y = start_orientation[1];
-    pose.orientation.z = start_orientation[2];
-    pose.orientation.w = start_orientation[3];
-
     req.poses.push_back(pose);
 
-    pose.position.x = end_position[0];
-    pose.position.y = end_position[1];
-    pose.position.z = end_position[2];
-
-    pose.orientation.x = end_orientation[0];
-    pose.orientation.y = end_orientation[1];
-    pose.orientation.z = end_orientation[2];
-    pose.orientation.w = end_orientation[3];
-
-    req.poses.push_back(pose);
-
+    //buildTrajectoryRequest(req);
     execute_cartesian_ik_trajectory(req, res);
 }
 
 //service function for execute_cartesian_ik_trajectory
 bool IKHelper::execute_cartesian_ik_trajectory( arm_test_gui::ExecuteCartesianIKTrajectory::Request &req, arm_test_gui::ExecuteCartesianIKTrajectory::Response &res)
 {
-//    int trajectory_length = req.poses.size();
+    //    int trajectory_length = req.poses.size();
     int i, j;
 
     //IK takes in Cartesian poses stamped with the frame they belong to
@@ -158,7 +114,6 @@ bool IKHelper::run_ik(geometry_msgs::PoseStamped pose, double start_angles[7], d
     ik_request.ik_request.ik_seed_state.joint_state.name.push_back("wrist_tilt_joint");
     ik_request.ik_request.ik_seed_state.joint_state.name.push_back("wrist_roll_joint");
 
-
     ik_request.ik_request.ik_link_name = link_name;
 
     ik_request.ik_request.pose_stamped = pose;
@@ -167,7 +122,7 @@ bool IKHelper::run_ik(geometry_msgs::PoseStamped pose, double start_angles[7], d
     for(int i=0; i<7; i++)
     {
         ik_request.ik_request.ik_seed_state.joint_state.position[i] = start_angles[i];
-        ROS_INFO("Seed state XXXX for joint %s = %f", ik_request.ik_request.ik_seed_state.joint_state.name[i].c_str(), ik_request.ik_request.ik_seed_state.joint_state.position[i]); //start_angles[i]);
+        ROS_INFO("Seed state for joint %s = %f", ik_request.ik_request.ik_seed_state.joint_state.name[i].c_str(), ik_request.ik_request.ik_seed_state.joint_state.position[i]); //start_angles[i]);
     }
 
     ROS_INFO("request pose: %0.3f %0.3f %0.3f %0.3f %0.3f %0.3f %0.3f", pose.pose.position.x, pose.pose.position.y, pose.pose.position.z, pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w);
@@ -223,6 +178,9 @@ bool IKHelper::execute_joint_trajectory(std::vector<double *> joint_trajectory)
     get_current_joint_angles(current_angles);
 
     //fill the goal message with the desired joint trajectory
+    control_msgs::FollowJointTrajectoryGoal goal;
+    initialiseGoal(goal);
+
     goal.trajectory.points.resize(trajectorylength+1);
 
     //set the first trajectory point to the current position
@@ -289,10 +247,29 @@ bool IKHelper::execute_joint_trajectory(std::vector<double *> joint_trajectory)
     return 0;
 }
 
+void IKHelper::initialiseGoal(control_msgs::FollowJointTrajectoryGoal &goal)
+{
+    //have to specify the order of the joints we're sending in our
+    //joint trajectory goal, even if they're already on the param server
+
+    goal.trajectory.joint_names.push_back("shoulder_pan_joint");
+    goal.trajectory.joint_names.push_back("shoulder_tilt_joint");
+    goal.trajectory.joint_names.push_back("upper_arm_roll_joint");
+    goal.trajectory.joint_names.push_back("elbow_tilt_joint");
+    goal.trajectory.joint_names.push_back("forearm_roll_joint");
+    goal.trajectory.joint_names.push_back("wrist_tilt_joint");
+    goal.trajectory.joint_names.push_back("wrist_roll_joint");
+}
+
+//void IKHelper::setUI(Ui::Widget *ui)
+//{
+//    this->ui = ui;
+//}
+
 ros::NodeHandle *IKHelper::getNodeHandle()
 {
     if (nodeHandle == (ros::NodeHandle *)0)
         nodeHandle = new ros::NodeHandle();
 
-  return nodeHandle;
+    return nodeHandle;
 }

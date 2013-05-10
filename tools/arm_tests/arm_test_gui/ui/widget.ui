@@ -86,13 +86,13 @@
          <property name="title">
           <string>Inputs</string>
          </property>
-         <widget class="QWidget" name="">
+         <widget class="QWidget" name="layoutWidget">
           <property name="geometry">
            <rect>
-            <x>10</x>
-            <y>40</y>
-            <width>174</width>
-            <height>95</height>
+            <x>30</x>
+            <y>34</y>
+            <width>111</width>
+            <height>101</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -103,18 +103,12 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
-            <widget class="QLineEdit" name="lineEdit"/>
-           </item>
            <item row="1" column="0">
             <widget class="QLabel" name="label_2">
              <property name="text">
               <string>y =</string>
              </property>
             </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLineEdit" name="lineEdit_2"/>
            </item>
            <item row="2" column="0">
             <widget class="QLabel" name="label_3">
@@ -123,8 +117,44 @@
              </property>
             </widget>
            </item>
+           <item row="0" column="1">
+            <widget class="QDoubleSpinBox" name="xDoubleSpinBox">
+             <property name="decimals">
+              <number>3</number>
+             </property>
+             <property name="singleStep">
+              <double>0.001000000000000</double>
+             </property>
+             <property name="value">
+              <double>0.453000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QDoubleSpinBox" name="yDoubleSpinBox">
+             <property name="decimals">
+              <number>3</number>
+             </property>
+             <property name="singleStep">
+              <double>0.001000000000000</double>
+             </property>
+             <property name="value">
+              <double>0.046000000000000</double>
+             </property>
+            </widget>
+           </item>
            <item row="2" column="1">
-            <widget class="QLineEdit" name="lineEdit_3"/>
+            <widget class="QDoubleSpinBox" name="zDoubleSpinBox">
+             <property name="decimals">
+              <number>3</number>
+             </property>
+             <property name="singleStep">
+              <double>0.001000000000000</double>
+             </property>
+             <property name="value">
+              <double>0.175000000000000</double>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
