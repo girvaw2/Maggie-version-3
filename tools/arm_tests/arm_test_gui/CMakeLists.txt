@@ -12,9 +12,6 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 rosbuild_init()
 
 
-
-
-
 find_package(Qt4 REQUIRED)
 # enable/disable some Qt features
 set( QT_USE_QTGUI TRUE )
@@ -33,10 +30,10 @@ QT4_WRAP_UI(uis_h ui/widget.ui)
 # include this for ui_h
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-# rosbuild_add_library(simple_move_test src/simple_move_test.cpp)
+rosbuild_add_library(park_arm src/parkarm.cpp)
 
-rosbuild_add_executable(arm_test_gui src/main.cpp ${uis_h} ${qt_srcs} ${qt_moc_srcs})
-target_link_libraries(arm_test_gui ${QT_LIBRARIES})
+rosbuild_add_executable(arm_test_gui src/main.cpp ${uis_h} ${qt_srcs} ${qt_moc_srcs} src/parkarm.cpp)
+target_link_libraries(arm_test_gui ${QT_LIBRARIES} park_arm)
 
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)

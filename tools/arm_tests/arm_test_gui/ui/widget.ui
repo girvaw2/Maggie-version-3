@@ -29,20 +29,27 @@
       <widget class="QGroupBox" name="groupBox">
        <property name="geometry">
         <rect>
-         <x>80</x>
-         <y>160</y>
+         <x>10</x>
+         <y>10</y>
          <width>123</width>
-         <height>63</height>
+         <height>96</height>
         </rect>
        </property>
        <property name="title">
-        <string>GroupBox</string>
+        <string>Initialise</string>
        </property>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="QPushButton" name="parkArmPushButton">
           <property name="text">
-           <string>PushButton</string>
+           <string>Park Arm</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="seedArmPushButton">
+          <property name="text">
+           <string>Seed Arm</string>
           </property>
          </widget>
         </item>

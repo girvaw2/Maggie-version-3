@@ -18,6 +18,8 @@ public:
 
 private Q_SLOTS:
 
+    void on_parkArmPushButton_clicked();
+
 private:
     Ui::Widget *ui;
 };

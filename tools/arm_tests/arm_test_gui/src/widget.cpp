@@ -1,5 +1,7 @@
 #include "ui_widget.h"
 #include "widget.h"
+#include "arm_test_gui/parkarm.h"
+
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -13,3 +15,10 @@ Widget::~Widget()
     delete ui;
 }
 
+
+void Widget::on_parkArmPushButton_clicked()
+{
+    ParkArm pa;
+    pa.park();
+
+}
