@@ -1,0 +1,17 @@
+<package>
+  <description brief="arm_test_gui">
+
+     arm_test_gui
+
+  </description>
+  <author>billy</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/arm_test_gui</url>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+  <depend package="sensor_msgs"/>
+
+</package>
+
+
