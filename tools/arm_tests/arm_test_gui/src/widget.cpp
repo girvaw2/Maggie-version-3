@@ -25,6 +25,6 @@ void Widget::on_pushButton_clicked()
 
 void Widget::on_pushButton_pressed()
 {
-    std::cout << "Button pressed!" << std::endl;
+    std::cout << "Button pressed!!" << std::endl;
 
 }
