@@ -52,11 +52,11 @@ void IKHelper::moveToGoal(geometry_msgs::Pose &pose)
     req.poses.push_back(pose);
 
     //buildTrajectoryRequest(req);
-    execute_cartesian_ik_trajectory(req, res);
+    executeCartesianIKTrajectory(req, res);
 }
 
-//service function for execute_cartesian_ik_trajectory
-bool IKHelper::execute_cartesian_ik_trajectory( arm_test_gui::ExecuteCartesianIKTrajectory::Request &req, arm_test_gui::ExecuteCartesianIKTrajectory::Response &res)
+//service function for executeCartesianIKTrajectory
+bool IKHelper::executeCartesianIKTrajectory( arm_test_gui::ExecuteCartesianIKTrajectory::Request &req, arm_test_gui::ExecuteCartesianIKTrajectory::Response &res)
 {
     //    int trajectory_length = req.poses.size();
     int i, j;
@@ -70,13 +70,15 @@ bool IKHelper::execute_cartesian_ik_trajectory( arm_test_gui::ExecuteCartesianIK
 
     //get the current joint angles (to find ik solutions close to)
     double last_angles[7];
-    get_current_joint_angles(last_angles);
+    getCurrentJointAngles(last_angles);
 
     for(i=0; i<1 /*trajectory_length*/; i++)
     {
         stamped_pose.pose = req.poses[i];
+        //shared_ptr<double> trajectory_point = new double[7];
+        //::boost::shared_ptr<int> trajectory_point (new double[7]);
         double *trajectory_point = new double[7];
-        success = run_ik(stamped_pose, last_angles, trajectory_point, "wrist_roll_link");
+        success = getIKSolution(stamped_pose, last_angles, trajectory_point, "wrist_roll_link");
         joint_trajectory.push_back(trajectory_point);
 
         if(!success)
@@ -90,15 +92,16 @@ bool IKHelper::execute_cartesian_ik_trajectory( arm_test_gui::ExecuteCartesianIK
         }
     }
 
-    //run the resulting joint trajectory
     ROS_INFO("executing joint trajectory");
-    success = execute_joint_trajectory(joint_trajectory);
+    success = executeJointTrajectory(joint_trajectory);
     res.success = success;
+
+
 
     return success;
 }
 
-bool IKHelper::run_ik(geometry_msgs::PoseStamped pose, double start_angles[7], double solution[7], std::string link_name)
+bool IKHelper::getIKSolution(geometry_msgs::PoseStamped pose, double start_angles[7], double solution[7], std::string link_name)
 {
 
     kinematics_msgs::GetPositionIK::Request  ik_request;
@@ -122,7 +125,7 @@ bool IKHelper::run_ik(geometry_msgs::PoseStamped pose, double start_angles[7], d
     for(int i=0; i<7; i++)
     {
         ik_request.ik_request.ik_seed_state.joint_state.position[i] = start_angles[i];
-        ROS_INFO("Seed state for joint %s = %f", ik_request.ik_request.ik_seed_state.joint_state.name[i].c_str(), ik_request.ik_request.ik_seed_state.joint_state.position[i]); //start_angles[i]);
+        ROS_INFO("Seed state for joint %s = %f", ik_request.ik_request.ik_seed_state.joint_state.name[i].c_str(), ik_request.ik_request.ik_seed_state.joint_state.position[i]);
     }
 
     ROS_INFO("request pose: %0.3f %0.3f %0.3f %0.3f %0.3f %0.3f %0.3f", pose.pose.position.x, pose.pose.position.y, pose.pose.position.z, pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w);
@@ -133,15 +136,14 @@ bool IKHelper::run_ik(geometry_msgs::PoseStamped pose, double start_angles[7], d
         ROS_ERROR("IK service call failed!");
         return 0;
     }
+
     if(ik_response.error_code.val == ik_response.error_code.SUCCESS)
     {
         for(int i=0; i<7; i++)
         {
             solution[i] = ik_response.solution.joint_state.position[i];
         }
-        ROS_INFO("solution angles: %0.3f %0.3f %0.3f %0.3f %0.3f %0.3f %0.3f",
-                 solution[0],solution[1], solution[2],solution[3],
-                 solution[4],solution[5], solution[6]);
+        ROS_INFO("solution angles: %0.3f %0.3f %0.3f %0.3f %0.3f %0.3f %0.3f", solution[0],solution[1], solution[2],solution[3], solution[4],solution[5], solution[6]);
         ROS_INFO("IK service call succeeded");
         return 1;
     }
@@ -150,32 +152,16 @@ bool IKHelper::run_ik(geometry_msgs::PoseStamped pose, double start_angles[7], d
 }
 
 
-//figure out where the arm is now
-void IKHelper::get_current_joint_angles(double current_angles[7])
-{
-    int i;
-
-    //get a single message from the topic 'r_arm_controller/state'
-    control_msgs::FollowJointTrajectoryFeedbackConstPtr state_msg = ros::topic::waitForMessage<control_msgs::FollowJointTrajectoryFeedback>("arm_controller/state");
-
-    //extract the joint angles from it
-    for(i=0; i<7; i++)
-    {
-        current_angles[i] = state_msg->actual.positions[i]; // actual.positions[i];
-        ROS_INFO("Current angle for motor %s = %f", state_msg->joint_names[i].c_str(), state_msg->actual.positions[i]);
-    }
-}
-
 //send a desired joint trajectory to the joint trajectory action
 //and wait for it to finish
-bool IKHelper::execute_joint_trajectory(std::vector<double *> joint_trajectory)
+bool IKHelper::executeJointTrajectory(std::vector<double *> joint_trajectory)
 {
     int i, j;
     int trajectorylength = joint_trajectory.size();
 
     //get the current joint angles
     double current_angles[7];
-    get_current_joint_angles(current_angles);
+    getCurrentJointAngles(current_angles);
 
     //fill the goal message with the desired joint trajectory
     control_msgs::FollowJointTrajectoryGoal goal;
@@ -188,7 +174,7 @@ bool IKHelper::execute_joint_trajectory(std::vector<double *> joint_trajectory)
     goal.trajectory.points[0].velocities.resize(7);
     for(j=0; j<7; j++)
     {
-        ROS_INFO ("execute_joint_trajectory - Joint names = %s Current Angle = %f", goal.trajectory.joint_names[j].c_str(), current_angles[j]);
+        ROS_INFO ("executeJointTrajectory - Joint names = %s Current Angle = %f", goal.trajectory.joint_names[j].c_str(), current_angles[j]);
         goal.trajectory.points[0].positions[j] = current_angles[j];
         goal.trajectory.points[0].velocities[j] = 0.0;
     }
@@ -216,10 +202,11 @@ bool IKHelper::execute_joint_trajectory(std::vector<double *> joint_trajectory)
         double max_joint_move = 0;
         for(j=0; j<7; j++)
         {
-            double joint_move = fabs(goal.trajectory.points[i+1].positions[j]
-                                     - goal.trajectory.points[i].positions[j]);
-            if(joint_move > max_joint_move) max_joint_move = joint_move;
+            double joint_move = fabs(goal.trajectory.points[i+1].positions[j] - goal.trajectory.points[i].positions[j]);
+            if(joint_move > max_joint_move)
+                max_joint_move = joint_move;
         }
+
         double seconds = max_joint_move/MAX_JOINT_VEL;
         ROS_INFO("max_joint_move: %0.3f, seconds: %0.3f", max_joint_move, seconds);
         time_from_start += seconds;
@@ -235,7 +222,7 @@ bool IKHelper::execute_joint_trajectory(std::vector<double *> joint_trajectory)
     action_client->waitForResult();
 
     //get the current joint angles for debugging
-    get_current_joint_angles(current_angles);
+    getCurrentJointAngles(current_angles);
     ROS_INFO("joint angles after trajectory: %0.3f %0.3f %0.3f %0.3f %0.3f %0.3f %0.3f\n",current_angles[0],current_angles[1],current_angles[2],current_angles[3],current_angles[4],current_angles[5],current_angles[6]);
 
     if(action_client->getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
@@ -261,10 +248,21 @@ void IKHelper::initialiseGoal(control_msgs::FollowJointTrajectoryGoal &goal)
     goal.trajectory.joint_names.push_back("wrist_roll_joint");
 }
 
-//void IKHelper::setUI(Ui::Widget *ui)
-//{
-//    this->ui = ui;
-//}
+//figure out where the arm is now
+void IKHelper::getCurrentJointAngles(double current_angles[7])
+{
+    int i;
+
+    //get a single message from the topic 'r_arm_controller/state'
+    control_msgs::FollowJointTrajectoryFeedbackConstPtr state_msg = ros::topic::waitForMessage<control_msgs::FollowJointTrajectoryFeedback>("arm_controller/state");
+
+    //extract the joint angles from it
+    for(i=0; i<7; i++)
+    {
+        current_angles[i] = state_msg->actual.positions[i]; // actual.positions[i];
+        ROS_INFO("Current angle for motor %s = %f", state_msg->joint_names[i].c_str(), state_msg->actual.positions[i]);
+    }
+}
 
 ros::NodeHandle *IKHelper::getNodeHandle()
 {

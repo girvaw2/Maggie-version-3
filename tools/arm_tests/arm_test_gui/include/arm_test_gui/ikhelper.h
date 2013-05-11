@@ -14,7 +14,6 @@
 #include <arm_test_gui/ExecuteCartesianIKTrajectory.h>
 #include <vector>
 #include <arm_navigation_msgs/SetPlanningSceneDiff.h>
-#include "../src/widget.h"
 
 #define MAX_JOINT_VEL 0.5  //in radians/sec
 
@@ -30,10 +29,10 @@ public:
     void moveToGoal(geometry_msgs::Pose &pose);
 
 private:
-    bool execute_cartesian_ik_trajectory( arm_test_gui::ExecuteCartesianIKTrajectory::Request &req, arm_test_gui::ExecuteCartesianIKTrajectory::Response &res);
-    bool run_ik(geometry_msgs::PoseStamped pose, double start_angles[7], double solution[7], std::string link_name);
-    void get_current_joint_angles(double current_angles[7]);
-    bool execute_joint_trajectory(std::vector<double *> joint_trajectory);
+    bool executeCartesianIKTrajectory( arm_test_gui::ExecuteCartesianIKTrajectory::Request &req, arm_test_gui::ExecuteCartesianIKTrajectory::Response &res);
+    bool getIKSolution(geometry_msgs::PoseStamped pose, double start_angles[7], double solution[7], std::string link_name);
+    void getCurrentJointAngles(double current_angles[7]);
+    bool executeJointTrajectory(std::vector<double *> joint_trajectory);
     void initialiseGoal(control_msgs::FollowJointTrajectoryGoal &goal);
     ros::NodeHandle *getNodeHandle();
 
