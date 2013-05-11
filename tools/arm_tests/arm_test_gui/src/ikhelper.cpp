@@ -66,7 +66,8 @@ bool IKHelper::executeCartesianIKTrajectory( arm_test_gui::ExecuteCartesianIKTra
     stamped_pose.header = req.header;
     stamped_pose.header.stamp = ros::Time::now();
     bool success;
-    std::vector<trajectory_ptr> joint_trajectory;
+
+    std::vector<trajectory_array_ptr> joint_trajectory;
 
     //get the current joint angles (to find ik solutions close to)
     double last_angles[7];
@@ -75,19 +76,21 @@ bool IKHelper::executeCartesianIKTrajectory( arm_test_gui::ExecuteCartesianIKTra
     for(i=0; i<1 /*trajectory_length*/; i++)
     {
         stamped_pose.pose = req.poses[i];
-        trajectory_ptr trajectory_point (new double[7]);
 
-        success = getIKSolution(stamped_pose, last_angles, trajectory_point.get(), "wrist_roll_link");
-        joint_trajectory.push_back(trajectory_point);
+        trajectory_array_ptr trajectory_array(new double[7]);
+
+        success = getIKSolution(stamped_pose, last_angles, trajectory_array, "wrist_roll_link");
+        joint_trajectory.push_back(trajectory_array);
 
         if(!success)
         {
             ROS_ERROR("IK solution not found for trajectory point number %d!\n", i);
             return 0;
         }
+
         for(j=0; j<7; j++)
         {
-            last_angles[j] = trajectory_point.get()[j];
+            last_angles[j] = trajectory_array[j];
         }
     }
 
@@ -95,12 +98,10 @@ bool IKHelper::executeCartesianIKTrajectory( arm_test_gui::ExecuteCartesianIKTra
     success = executeJointTrajectory(joint_trajectory);
     res.success = success;
 
-
-
     return success;
 }
 
-bool IKHelper::getIKSolution(geometry_msgs::PoseStamped pose, double start_angles[7], double solution[7], std::string link_name)
+bool IKHelper::getIKSolution(geometry_msgs::PoseStamped pose, double start_angles[7], trajectory_array_ptr solution, std::string link_name)
 {
 
     kinematics_msgs::GetPositionIK::Request  ik_request;
@@ -153,7 +154,7 @@ bool IKHelper::getIKSolution(geometry_msgs::PoseStamped pose, double start_angle
 
 //send a desired joint trajectory to the joint trajectory action
 //and wait for it to finish
-bool IKHelper::executeJointTrajectory(std::vector<trajectory_ptr> joint_trajectory)
+bool IKHelper::executeJointTrajectory(std::vector<trajectory_array_ptr> joint_trajectory)
 {
     int i, j;
     int trajectorylength = joint_trajectory.size();
@@ -192,7 +193,7 @@ bool IKHelper::executeJointTrajectory(std::vector<trajectory_ptr> joint_trajecto
         //will try to stop briefly at each waypoint)
         for(j=0; j<7; j++)
         {
-            goal.trajectory.points[i+1].positions[j] = ((trajectory_ptr)joint_trajectory[i]).get()[j];
+            goal.trajectory.points[i+1].positions[j] = joint_trajectory[i][j];
             goal.trajectory.points[i+1].velocities[j] = 0.0;
         }
 

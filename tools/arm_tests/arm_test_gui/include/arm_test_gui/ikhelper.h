@@ -21,7 +21,7 @@ static const std::string SET_PLANNING_SCENE_DIFF_NAME = "/environment_server/set
 static const std::string ARM_IK_NAME = "/maggie_right_arm_kinematics/get_ik";
 typedef actionlib::SimpleActionClient<control_msgs::FollowJointTrajectoryAction> TrajClient;
 
-typedef ::boost::shared_ptr<double> trajectory_ptr;
+typedef ::boost::shared_array<double> trajectory_array_ptr;
 
 class IKHelper
 {
@@ -32,9 +32,9 @@ public:
 
 private:
     bool executeCartesianIKTrajectory( arm_test_gui::ExecuteCartesianIKTrajectory::Request &req, arm_test_gui::ExecuteCartesianIKTrajectory::Response &res);
-    bool getIKSolution(geometry_msgs::PoseStamped pose, double start_angles[7], double solution[7], std::string link_name);
+    bool getIKSolution(geometry_msgs::PoseStamped pose, double start_angles[7], ::boost::shared_array<double> solution, std::string link_name);
     void getCurrentJointAngles(double current_angles[7]);
-    bool executeJointTrajectory(std::vector<trajectory_ptr> joint_trajectory);
+    bool executeJointTrajectory(std::vector< ::boost::shared_array<double> > joint_trajectory); //std::vector<trajectory_ptr> joint_trajectory);
     void initialiseGoal(control_msgs::FollowJointTrajectoryGoal &goal);
     ros::NodeHandle *getNodeHandle();
 
