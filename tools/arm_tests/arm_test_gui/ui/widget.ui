@@ -122,6 +122,12 @@
              <property name="decimals">
               <number>3</number>
              </property>
+             <property name="minimum">
+              <double>-0.500000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>0.500000000000000</double>
+             </property>
              <property name="singleStep">
               <double>0.001000000000000</double>
              </property>
@@ -135,6 +141,12 @@
              <property name="decimals">
               <number>3</number>
              </property>
+             <property name="minimum">
+              <double>-0.500000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>0.500000000000000</double>
+             </property>
              <property name="singleStep">
               <double>0.001000000000000</double>
              </property>
@@ -147,6 +159,12 @@
             <widget class="QDoubleSpinBox" name="zDoubleSpinBox">
              <property name="decimals">
               <number>3</number>
+             </property>
+             <property name="minimum">
+              <double>-0.500000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>0.500000000000000</double>
              </property>
              <property name="singleStep">
               <double>0.001000000000000</double>

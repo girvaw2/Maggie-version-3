@@ -66,7 +66,7 @@ bool IKHelper::executeCartesianIKTrajectory( arm_test_gui::ExecuteCartesianIKTra
     stamped_pose.header = req.header;
     stamped_pose.header.stamp = ros::Time::now();
     bool success;
-    std::vector<double *> joint_trajectory;
+    std::vector<trajectory_ptr> joint_trajectory;
 
     //get the current joint angles (to find ik solutions close to)
     double last_angles[7];
@@ -75,10 +75,9 @@ bool IKHelper::executeCartesianIKTrajectory( arm_test_gui::ExecuteCartesianIKTra
     for(i=0; i<1 /*trajectory_length*/; i++)
     {
         stamped_pose.pose = req.poses[i];
-        //shared_ptr<double> trajectory_point = new double[7];
-        //::boost::shared_ptr<int> trajectory_point (new double[7]);
-        double *trajectory_point = new double[7];
-        success = getIKSolution(stamped_pose, last_angles, trajectory_point, "wrist_roll_link");
+        trajectory_ptr trajectory_point (new double[7]);
+
+        success = getIKSolution(stamped_pose, last_angles, trajectory_point.get(), "wrist_roll_link");
         joint_trajectory.push_back(trajectory_point);
 
         if(!success)
@@ -88,7 +87,7 @@ bool IKHelper::executeCartesianIKTrajectory( arm_test_gui::ExecuteCartesianIKTra
         }
         for(j=0; j<7; j++)
         {
-            last_angles[j] = trajectory_point[j];
+            last_angles[j] = trajectory_point.get()[j];
         }
     }
 
@@ -154,7 +153,7 @@ bool IKHelper::getIKSolution(geometry_msgs::PoseStamped pose, double start_angle
 
 //send a desired joint trajectory to the joint trajectory action
 //and wait for it to finish
-bool IKHelper::executeJointTrajectory(std::vector<double *> joint_trajectory)
+bool IKHelper::executeJointTrajectory(std::vector<trajectory_ptr> joint_trajectory)
 {
     int i, j;
     int trajectorylength = joint_trajectory.size();
@@ -193,7 +192,7 @@ bool IKHelper::executeJointTrajectory(std::vector<double *> joint_trajectory)
         //will try to stop briefly at each waypoint)
         for(j=0; j<7; j++)
         {
-            goal.trajectory.points[i+1].positions[j] = joint_trajectory[i][j];
+            goal.trajectory.points[i+1].positions[j] = ((trajectory_ptr)joint_trajectory[i]).get()[j];
             goal.trajectory.points[i+1].velocities[j] = 0.0;
         }
 
@@ -251,17 +250,20 @@ void IKHelper::initialiseGoal(control_msgs::FollowJointTrajectoryGoal &goal)
 //figure out where the arm is now
 void IKHelper::getCurrentJointAngles(double current_angles[7])
 {
-    int i;
-
     //get a single message from the topic 'r_arm_controller/state'
     control_msgs::FollowJointTrajectoryFeedbackConstPtr state_msg = ros::topic::waitForMessage<control_msgs::FollowJointTrajectoryFeedback>("arm_controller/state");
 
-    //extract the joint angles from it
-    for(i=0; i<7; i++)
-    {
-        current_angles[i] = state_msg->actual.positions[i]; // actual.positions[i];
-        ROS_INFO("Current angle for motor %s = %f", state_msg->joint_names[i].c_str(), state_msg->actual.positions[i]);
-    }
+    /*
+     * The list of positions within the state_msg are in alphabtical order, so we need to populate the current_angle array correctly...
+     */
+
+    current_angles[0] = state_msg->actual.positions[2];
+    current_angles[1] = state_msg->actual.positions[3];
+    current_angles[2] = state_msg->actual.positions[4];
+    current_angles[3] = state_msg->actual.positions[0];
+    current_angles[4] = state_msg->actual.positions[1];
+    current_angles[5] = state_msg->actual.positions[6];
+    current_angles[6] = state_msg->actual.positions[5];
 }
 
 ros::NodeHandle *IKHelper::getNodeHandle()
