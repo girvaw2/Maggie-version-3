@@ -16,7 +16,7 @@ void ParkArm::park()
     setVelocity("/shoulder_pan_controller", 0.25);
 
     publish("/wrist_roll_controller/command",0);
-    publish("/wrist_tilt_controller/command",0.1);
+    publish("/wrist_tilt_controller/command",0);
     publish("/forearm_roll_controller/command",0);
     publish("/elbow_tilt_controller/command",0);
     publish("/upper_arm_roll_controller/command",0);
