@@ -61,7 +61,7 @@ SET(CMAKE_C_INCLUDE_PATH
   "/opt/ros/fuerte/stacks/visualization/interactive_markers/include"
   "/opt/ros/fuerte/stacks/robot_model/robot_state_publisher/include"
   "/opt/ros/fuerte/stacks/robot_model/kdl_parser/include"
-  "/opt/ros/fuerte/stacks/orocos_kinematics_dynamics/orocos_kdl/install_dir/include"
+  "/home/billy/robotics/temp/orocos_kinematics_dynamics/orocos_kdl/install_dir/include"
   "/opt/ros/fuerte/stacks/geometry/tf_conversions/include"
   )
 SET(CMAKE_CXX_INCLUDE_PATH ${CMAKE_C_INCLUDE_PATH})

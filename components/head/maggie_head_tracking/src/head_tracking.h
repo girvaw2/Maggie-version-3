@@ -24,7 +24,7 @@
 #define FOV_WIDTH 	1.094
 #define FOV_HEIGHT 	1.094
 
-#define DEBUG_			0
+#define DEBUG_			1
 #define DISABLE_HEAD_MOVEMENT	0
 
 using namespace std;

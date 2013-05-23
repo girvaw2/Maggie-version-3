@@ -18,7 +18,7 @@
           output="screen"/>
 
    <!-- Publish fake joint states. The planning scene service requires that all joints listed in the URDF has published joint states on the /joint_states topic. -->
-   <node name="fake_joint_publisher" pkg="fake_joint_publisher" type="fake_joint_publisher.py" output="screen" />
+   <!--node name="fake_joint_publisher" pkg="fake_joint_publisher" type="fake_joint_publisher.py" output="screen" /-->
 
     <!-- Load the URDF/Xacro model of our robot -->
     <param name="robot_description" command="$(find xacro)/xacro.py '$(find maggie_model)/urdf/maggie.xacro'" />

@@ -24,8 +24,8 @@
 #define FOV_WIDTH 	1.094
 #define FOV_HEIGHT 	1.094
 
-#define DEBUG_			0
-#define DISABLE_HEAD_MOVEMENT	0
+#define DEBUG_			1
+#define DISABLE_HEAD_MOVEMENT	1
 
 using namespace std;
 using namespace cv;
@@ -84,7 +84,7 @@ private:
   float panAngle_;
   float tiltAngle_;
   
-  CascadeClassifier face_cascade_X;
+  CascadeClassifier face_cascade;
   String face_cascade_name;
   
   Point faceCentre_; 

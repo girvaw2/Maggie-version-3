@@ -18,9 +18,9 @@ void ParkArm::park()
     publish("/wrist_roll_controller/command",0);
     publish("/wrist_tilt_controller/command",0);
     publish("/forearm_roll_controller/command",0);
-    publish("/elbow_tilt_controller/command",0);
+    publish("/elbow_tilt_controller/command",0.4);
     publish("/upper_arm_roll_controller/command",0);
-    publish("/shoulder_tilt_controller/command",-0.5);
+    publish("/shoulder_tilt_controller/command",-0.3);
     publish("/shoulder_pan_controller/command",1.53);
 }
 

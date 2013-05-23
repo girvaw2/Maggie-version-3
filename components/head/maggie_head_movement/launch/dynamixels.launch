@@ -3,7 +3,7 @@
 	
     <!-- Load the URDF/Xacro model of our robot -->
 	<!--param name="robot_description" command="$(find xacro)/xacro.py '$(find maggie_head_movement)/urdf/maggie.urdf.xacro'" /-->
-	<param name="robot_description" command="$(find xacro)/xacro.py '$(find maggie_model)/urdf/maggie.xacro'" />
+	<!--param name="robot_description" command="$(find xacro)/xacro.py '$(find maggie_model)/urdf/maggie.xacro'" /-->
 
     <!-- Publish the robot state -->
 	<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
@@ -17,7 +17,7 @@
          namespace: maggie_dynamixel_manager
          serial_ports:
             dynamixel_ax12:
-               port_name: "/dev/ttyUSB0"
+               port_name: "/dev/ttyUSB1"
                baud_rate: 1000000
                min_motor_id: 1
                max_motor_id: 2 
@@ -45,5 +45,8 @@
    <node ns="$(arg dynamixel_namespace)" pkg="maggie_head_movement" type="relax_all_servos.py" name="relax_all_servos" output="screen" />
   
    <!-- Publish a static transform between the robot base and the world frame -->
-   <node pkg="tf" type="static_transform_publisher" name="world_base_broadcaster" args="0 0 0.0325 0 0 0 /world /base_link 100" />
+   <!--node pkg="tf" type="static_transform_publisher" name="world_base_broadcaster" args="0 0 0.0325 0 0 0 /world /base_link 100" /-->
+
+   <node pkg="tf" type="static_transform_publisher" name="camera_broadcaster" args="0 0 0 0 0 0 /head_link /camera_link 100" />
+
 </launch>

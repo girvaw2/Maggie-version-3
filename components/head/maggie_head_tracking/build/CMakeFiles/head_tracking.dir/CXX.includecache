@@ -209,8 +209,6 @@ windows.h
 -
 pthread.h
 -
-sys/mman.h
--
 ipp.h
 /opt/ros/fuerte/include/opencv2/core/ipp.h
 emmintrin.h
@@ -283,6 +281,8 @@ ipl/ipl.h
 -
 tegra_round.hpp
 /opt/ros/fuerte/include/opencv2/core/tegra_round.hpp
+emmintrin.h
+/opt/ros/fuerte/include/opencv2/core/emmintrin.h
 
 /opt/ros/fuerte/include/opencv2/core/version.hpp
 
@@ -323,6 +323,8 @@ stdio.h
 -
 
 /opt/ros/fuerte/include/opencv2/flann/any.h
+defines.h
+/opt/ros/fuerte/include/opencv2/flann/defines.h
 stdexcept
 -
 ostream
@@ -381,6 +383,8 @@ stdint.h
 -
 defines.h
 /opt/ros/fuerte/include/opencv2/flann/defines.h
+arm_neon.h
+/opt/ros/fuerte/include/opencv2/flann/arm_neon.h
 
 /opt/ros/fuerte/include/opencv2/flann/dynamic_bitset.h
 boost/dynamic_bitset.hpp
@@ -761,8 +765,6 @@ string.h
 /opt/ros/fuerte/include/opencv2/objdetect/objdetect.hpp
 opencv2/core/core.hpp
 /opt/ros/fuerte/include/opencv2/objdetect/opencv2/core/core.hpp
-opencv2/features2d/features2d.hpp
-/opt/ros/fuerte/include/opencv2/objdetect/opencv2/features2d/features2d.hpp
 map
 -
 deque
@@ -771,8 +773,8 @@ deque
 /opt/ros/fuerte/include/opencv2/video/tracking.hpp
 opencv2/core/core.hpp
 /opt/ros/fuerte/include/opencv2/video/opencv2/core/core.hpp
-opencv2/imgproc/imgproc_c.h
-/opt/ros/fuerte/include/opencv2/video/opencv2/imgproc/imgproc_c.h
+opencv2/imgproc/imgproc.hpp
+/opt/ros/fuerte/include/opencv2/video/opencv2/imgproc/imgproc.hpp
 
 /opt/ros/fuerte/include/pcl-1.5/pcl/PointIndices.h
 string

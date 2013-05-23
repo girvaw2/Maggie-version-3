@@ -102,9 +102,9 @@ CMakeFiles/head_tracking.dir/src/head_tracking.o: /opt/ros/fuerte/stacks/robot_m
 CMakeFiles/head_tracking.dir/src/head_tracking.o: /opt/ros/fuerte/stacks/image_common/image_transport/manifest.xml
 CMakeFiles/head_tracking.dir/src/head_tracking.o: /opt/ros/fuerte/stacks/visualization/interactive_markers/manifest.xml
 CMakeFiles/head_tracking.dir/src/head_tracking.o: /opt/ros/fuerte/stacks/visualization/rviz/manifest.xml
-CMakeFiles/head_tracking.dir/src/head_tracking.o: /opt/ros/fuerte/stacks/orocos_kinematics_dynamics/orocos_kdl/manifest.xml
-CMakeFiles/head_tracking.dir/src/head_tracking.o: /opt/ros/fuerte/stacks/orocos_kinematics_dynamics/python_orocos_kdl/manifest.xml
-CMakeFiles/head_tracking.dir/src/head_tracking.o: /opt/ros/fuerte/stacks/orocos_kinematics_dynamics/kdl/manifest.xml
+CMakeFiles/head_tracking.dir/src/head_tracking.o: /home/billy/robotics/temp/orocos_kinematics_dynamics/orocos_kdl/manifest.xml
+CMakeFiles/head_tracking.dir/src/head_tracking.o: /home/billy/robotics/temp/orocos_kinematics_dynamics/python_orocos_kdl/manifest.xml
+CMakeFiles/head_tracking.dir/src/head_tracking.o: /home/billy/robotics/temp/orocos_kinematics_dynamics/kdl/manifest.xml
 CMakeFiles/head_tracking.dir/src/head_tracking.o: /opt/ros/fuerte/stacks/robot_model/kdl_parser/manifest.xml
 CMakeFiles/head_tracking.dir/src/head_tracking.o: /opt/ros/fuerte/stacks/geometry/tf_conversions/manifest.xml
 CMakeFiles/head_tracking.dir/src/head_tracking.o: /opt/ros/fuerte/stacks/robot_model/robot_state_publisher/manifest.xml
@@ -158,10 +158,13 @@ head_tracking_EXTERNAL_OBJECTS =
 ../bin/head_tracking: /opt/ros/fuerte/lib/libopencv_imgproc.so
 ../bin/head_tracking: /opt/ros/fuerte/lib/libopencv_legacy.so
 ../bin/head_tracking: /opt/ros/fuerte/lib/libopencv_ml.so
+../bin/head_tracking: /opt/ros/fuerte/lib/libopencv_nonfree.so
 ../bin/head_tracking: /opt/ros/fuerte/lib/libopencv_objdetect.so
+../bin/head_tracking: /opt/ros/fuerte/lib/libopencv_photo.so
 ../bin/head_tracking: /opt/ros/fuerte/lib/libopencv_stitching.so
 ../bin/head_tracking: /opt/ros/fuerte/lib/libopencv_ts.so
 ../bin/head_tracking: /opt/ros/fuerte/lib/libopencv_video.so
+../bin/head_tracking: /opt/ros/fuerte/lib/libopencv_videostab.so
 ../bin/head_tracking: CMakeFiles/head_tracking.dir/build.make
 ../bin/head_tracking: CMakeFiles/head_tracking.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable ../bin/head_tracking"
