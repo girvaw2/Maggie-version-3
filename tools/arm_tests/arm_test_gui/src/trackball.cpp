@@ -46,6 +46,7 @@ void TrackBall::init()
 //            return;
 //        cvReleaseImage(&img);
 //    }
+    //
 
     std::string image_topic = "/camera/rgb/image_color";
     image_sub_ = getNodeHandle()->subscribe (image_topic, 1, &TrackBall::image_cb, this);
