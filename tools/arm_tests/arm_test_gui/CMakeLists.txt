@@ -33,9 +33,11 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 rosbuild_add_library(park_arm src/parkarm.cpp)
 rosbuild_add_library(seed_arm src/seedarm.cpp)
 rosbuild_add_library(ik_helper src/ikhelper.cpp)
+rosbuild_add_library(track_face src/trackface.cpp)
+rosbuild_add_library(track_ball src/trackball.cpp)
 
-rosbuild_add_executable(arm_test_gui src/main.cpp ${uis_h} ${qt_srcs} ${qt_moc_srcs} src/parkarm.cpp src/seedarm.cpp src/ikhelper.cpp)
-target_link_libraries(arm_test_gui ${QT_LIBRARIES} park_arm seed_arm ik_helper)
+rosbuild_add_executable(arm_test_gui src/main.cpp ${uis_h} ${qt_srcs} ${qt_moc_srcs} src/parkarm.cpp src/seedarm.cpp src/ikhelper.cpp src/trackface.cpp src/trackball.cpp)
+target_link_libraries(arm_test_gui ${QT_LIBRARIES} park_arm seed_arm ik_helper track_face track_ball)
 
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)

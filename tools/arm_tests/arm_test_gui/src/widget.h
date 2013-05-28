@@ -3,6 +3,10 @@
 
 #include <QWidget>
 #include "ui_widget.h"
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/thread.hpp>
+#include <boost/bind.hpp>
 
 namespace Ui {
     class Widget;
@@ -24,8 +28,15 @@ private Q_SLOTS:
 
     void on_moveToIKPushButton_clicked();
 
+    void on_startFaceTrackingPushButton_clicked();
+
+    void on_stopFaceTrackingPushButton_clicked();
+
+    void on_startBallTrackingPushButton_clicked();
+
 private:
     Ui::Widget *ui;
+    boost::shared_ptr<boost::thread> face_track_ptr;
 };
 
 #endif // WIDGET_H

@@ -50,7 +50,7 @@ HeadTracking::trackFace(cv_bridge::CvImagePtr cv_ptr)
     float x = z * FOV_WIDTH * (faceCentre_.x - cv_ptr->image.size().width / 2.0) / cv_ptr->image.size().width;
     float y = (z * FOV_HEIGHT * (faceCentre_.y - cv_ptr->image.size().height / 2.0) / cv_ptr->image.size().height);
     
-    //adjustSpeedForDisplacement(x, y);
+    adjustSpeedForDisplacement(x, y);
     
 
 //     char dbgstr[100];
@@ -66,7 +66,7 @@ HeadTracking::trackFace(cv_bridge::CvImagePtr cv_ptr)
     * We've got everything we need, so publish the faceCentre 3d coordinate to the target frame
     */
     //setHeadPosition("head_link", x, y, cv_ptr->image.at<float>(faceCentre_) + 0.01);
-    setHeadPosition("head_tilt_link", 1/*z*/, -x, y);
+    setHeadPosition("head_link", z, -x, -y);
   }
 }
   

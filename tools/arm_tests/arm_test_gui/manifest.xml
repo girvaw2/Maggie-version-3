@@ -19,6 +19,8 @@
   <depend package="control_msgs"/>
   <depend package="arm_navigation_msgs"/>
   <depend package="tf"/>
+  <depend package="opencv2"/>
+  <depend package="cv_bridge"/>
 </package>
 
 

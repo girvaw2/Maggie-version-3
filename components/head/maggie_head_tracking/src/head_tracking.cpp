@@ -33,7 +33,7 @@ HeadTracking::detectFace( cv_bridge::CvImagePtr cv_ptr )
 	sprintf(facePositionText, "detectFace x=%f y=%f", x, y);
 	putText(frame, facePositionText, cvPoint(30,30), FONT_HERSHEY_PLAIN, 2.0, cvScalar(255, 0, 255 ), 1, CV_AA);
 	
-	image_pub_.publish(cv_ptr->toImageMsg());
+	//image_pub_.publish(cv_ptr->toImageMsg());
       }
       return;
     }
@@ -50,7 +50,7 @@ HeadTracking::trackFace(cv_bridge::CvImagePtr cv_ptr)
     float x = z * FOV_WIDTH * (faceCentre_.x - cv_ptr->image.size().width / 2.0) / cv_ptr->image.size().width;
     float y = (z * FOV_HEIGHT * (faceCentre_.y - cv_ptr->image.size().height / 2.0) / cv_ptr->image.size().height);
     
-    //adjustSpeedForDisplacement(x, y);
+    adjustSpeedForDisplacement(x, y);
     
 
 //     char dbgstr[100];
@@ -66,7 +66,7 @@ HeadTracking::trackFace(cv_bridge::CvImagePtr cv_ptr)
     * We've got everything we need, so publish the faceCentre 3d coordinate to the target frame
     */
     //setHeadPosition("head_link", x, y, cv_ptr->image.at<float>(faceCentre_) + 0.01);
-    setHeadPosition("head_link", 1/*z*/, -x, y);
+    setHeadPosition("head_link", z, -x, -y);
   }
 }
   

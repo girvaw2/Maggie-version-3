@@ -20,7 +20,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="initialiseTab">
       <attribute name="title">
@@ -191,6 +191,89 @@
       <attribute name="title">
        <string>Forward Kinematics</string>
       </attribute>
+     </widget>
+     <widget class="QWidget" name="ballTrackingTab">
+      <attribute name="title">
+       <string>Ball Tracking</string>
+      </attribute>
+      <widget class="QPushButton" name="startBallTrackingPushButton">
+       <property name="geometry">
+        <rect>
+         <x>60</x>
+         <y>40</y>
+         <width>141</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Start Ball Tracking</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="headTrackingTab">
+      <attribute name="title">
+       <string>Face Tracking</string>
+      </attribute>
+      <widget class="QGroupBox" name="groupBox_5">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>20</y>
+         <width>181</width>
+         <height>101</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Initialise</string>
+       </property>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>30</y>
+          <width>147</width>
+          <height>62</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
+          <widget class="QPushButton" name="startFaceTrackingPushButton">
+           <property name="text">
+            <string>Start Face Tracking</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QPushButton" name="stopFaceTrackingPushButton">
+           <property name="text">
+            <string>Stop Face Tracking</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QLabel" name="label_4">
+       <property name="geometry">
+        <rect>
+         <x>280</x>
+         <y>50</y>
+         <width>511</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Face tracking requires the following sessions to be running:
+- maggie_head_movement maggie_head_movement.launch
+- maggie_head_tracking/bin/maggie_head_tracking</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
      </widget>
     </widget>
    </item>
