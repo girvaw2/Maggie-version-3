@@ -1,52 +1,68 @@
 #include "arm_test_gui/trackball.h"
 
-TrackBall::TrackBall()
+TrackBall::TrackBall(int hueLower, int hueUpper, int saturationLower, int saturationUpper, int valueLower, int valueUpper) :
+    hueLower(hueLower),
+    hueUpper(hueUpper),
+    saturationLower(saturationLower),
+    saturationUpper(saturationUpper),
+    valueLower(valueLower),
+    valueUpper(valueUpper)
 {
     nodeHandle = (ros::NodeHandle *)0;
-    init();
 }
+
+void TrackBall::setHueLowerValue(int value) { hueLower = value; }
+void TrackBall::setHueUpperValue(int value) { hueUpper = value; }
+void TrackBall::setSaturationLowerValue(int value) { saturationLower = value; }
+void TrackBall::setSaturationUpperValue(int value) { saturationUpper = value; }
+void TrackBall::setValueLowerValue(int value) { valueLower = value; }
+void TrackBall::setValueUpperValue(int value) { valueUpper = value; }
 
 void
 TrackBall::image_cb (const sensor_msgs::Image& rgbImage)
 {
-  cv_bridge::CvImagePtr cv_ptr;
-  try
-  {
-    cv_ptr = cv_bridge::toCvCopy(rgbImage, sensor_msgs::image_encodings::BGR8);
-  }
-  catch (cv_bridge::Exception& e)
-  {
-    ROS_ERROR("cv_bridge exception: %s", e.what());
-    return;
-  }
+    std::cout << "image_cb" << std::endl;
 
-  // set the global image pointer
-  //cv_ptr_ = cv_ptr;
+    cv_bridge::CvImagePtr cv_ptr;
+    try
+    {
+        cv_ptr = cv_bridge::toCvCopy(rgbImage, sensor_msgs::image_encodings::BGR8);
+
+        Mat frame = cv_ptr->image;
+        Mat frame_hsv;
+
+        GaussianBlur(frame, frame, Size(3, 3), 0, 0);
+
+        cvtColor( frame, frame_hsv, CV_BGR2HSV);
+
+        vector<cv::Mat> v;
+        split(frame_hsv, v);
+
+        Mat frame_h = v.at(0);
+        Mat frame_thresh;
+
+        inRange(frame_h, cv::Scalar(hueLower,160,160), cv::Scalar(hueUpper,256,256), frame_thresh);
+
+        GaussianBlur(frame_thresh, frame_thresh, Size(3, 3), 0, 0);
+
+        cv_bridge::CvImage cv_ptr2;
+
+        cv_ptr2.header = cv_ptr->header;
+        cv_ptr2.encoding = sensor_msgs::image_encodings::MONO8;
+        cv_ptr2.image = frame_thresh;
+
+        image_pub_.publish(cv_ptr2.toImageMsg());
+    }
+    catch (cv_bridge::Exception& e)
+    {
+        ROS_ERROR("cv_bridge exception: %s", e.what());
+        return;
+    }
 }
 
-void TrackBall::init()
+void TrackBall::loop()
 {
-//    /* Start the CV system and get the first v4l camera */
-//    cv::cvInitSystem(0, (char **)0);
-//    CvCapture *cam = cvCreateCameraCapture(0);
-
-//    cv::VideoCapture cap(0);
-
-//    /* Create a window to use for displaying the images */
-//    cvNamedWindow("img", 0);
-//    cvMoveWindow("img", 200, 200);
-
-//    /* Display images until the user presses q */
-//    while (1)
-//    {
-//        cvGrabFrame(cam);
-//        IplImage *img = cvRetrieveFrame(cam);
-//        cvShowImage("img", img);
-//        if (cvWaitKey(10) == XK_q)
-//            return;
-//        cvReleaseImage(&img);
-//    }
-    //
+    service.run();
 
     std::string image_topic = "/camera/rgb/image_color";
     image_sub_ = getNodeHandle()->subscribe (image_topic, 1, &TrackBall::image_cb, this);
@@ -55,26 +71,14 @@ void TrackBall::init()
     std::string r_it = getNodeHandle()->resolveName (image_topic);
     ROS_INFO_STREAM("Listening for incoming data on topic " << r_it );
 
-//    cv::VideoCapture cap(0); // open the default camera
-//    if(!cap.isOpened())  // check if we succeeded
-//        return; // -1;
+    ros::Rate r(10);
+    while(true)
+    {
+        ros::spinOnce();
+        r.sleep();
+    }
 
-//    cv::Mat edges;
-//    cv::namedWindow("edges",1);
-//    for(;;)
-//    {
-//        cv::Mat frame;
-//        cap >> frame; // get a new frame from camera
-//        cv::cvtColor(frame, edges, CV_BGR2GRAY);
-//        cv::GaussianBlur(edges, edges, cv::Size(7,7), 1.5, 1.5);
-//        cv::Canny(edges, edges, 0, 30, 3);
-//        cv::imshow("edges", edges);
-//        if(cv::waitKey(30) >= 0)
-//            break;
-//    }
-    // the camera will be deinitialized automatically in VideoCapture destructor
-    return; // 0;
-
+    return;
 }
 
 ros::NodeHandle *TrackBall::getNodeHandle()

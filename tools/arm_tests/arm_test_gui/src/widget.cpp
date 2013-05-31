@@ -4,7 +4,7 @@
 #include "arm_test_gui/seedarm.h"
 #include "arm_test_gui/ikhelper.h"
 #include "arm_test_gui/trackface.h"
-#include "arm_test_gui/trackball.h"
+
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -56,21 +56,39 @@ void Widget::on_startFaceTrackingPushButton_clicked()
     TrackFace tf;
     face_track_ptr.reset(new boost::thread (boost::bind(&TrackFace::startFaceTracking, &tf)));
     //tf.startFaceTracking();
-
     //face_track_ptr.reset(new boost::thread (boost::bind(&TrackFace::moveArmToFacePosition, &tf)));
 
 }
 
 void Widget::on_stopFaceTrackingPushButton_clicked()
 {
-//    face_track_ptr->interrupt();
+    //face_track_ptr->interrupt();
     //face_track_ptr->detach();
     face_track_ptr->join();
-
 }
 
 void Widget::on_startBallTrackingPushButton_clicked()
 {
-    TrackBall tb;
-    //tb.init();
+    tb = new TrackBall( ui->hueLowerSlider->value(),
+                        ui->hueUpperSlider->value(),
+                        ui->saturationLowerSlider->value(),
+                        ui->saturationUpperSlider->value(),
+                        ui->valueLowerSlider->value(),
+                        ui->valueUpperSlider->value());
+
+    tb_thread = new boost::thread (boost::bind(&TrackBall::loop, boost::ref(*tb)));
+}
+
+void Widget::on_hueLowerSlider_sliderMoved(int position)
+{
+    boost::signals2::signal<void(int)> signal;
+    signal.connect(boost::bind(&TrackBall::setHueLowerValue, boost::ref(*tb), _1));
+    signal(position);
+}
+
+void Widget::on_hueUpperSlider_sliderMoved(int position)
+{
+    boost::signals2::signal<void(int)> signal;
+    signal.connect(boost::bind(&TrackBall::setHueUpperValue, boost::ref(*tb), _1));
+    signal(position);
 }
