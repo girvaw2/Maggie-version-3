@@ -81,6 +81,7 @@ void Widget::on_startBallTrackingPushButton_clicked()
 
 void Widget::on_hueLowerSlider_sliderMoved(int position)
 {
+    ui->hueLowerLabel->setText(QString::number(position));
     boost::signals2::signal<void(int)> signal;
     signal.connect(boost::bind(&TrackBall::setHueLowerValue, boost::ref(*tb), _1));
     signal(position);
@@ -88,7 +89,53 @@ void Widget::on_hueLowerSlider_sliderMoved(int position)
 
 void Widget::on_hueUpperSlider_sliderMoved(int position)
 {
+    ui->hueUpperLabel->setText(QString::number(position));
     boost::signals2::signal<void(int)> signal;
     signal.connect(boost::bind(&TrackBall::setHueUpperValue, boost::ref(*tb), _1));
     signal(position);
+}
+
+void Widget::on_saturationLowerSlider_sliderMoved(int position)
+{
+    ui->saturationLowerLabel->setText(QString::number(position));
+    boost::signals2::signal<void(int)> signal;
+    signal.connect(boost::bind(&TrackBall::setSaturationLowerValue, boost::ref(*tb), _1));
+    signal(position);
+}
+
+void Widget::on_saturationUpperSlider_sliderMoved(int position)
+{
+    ui->saturationLowerLabel->setText(QString::number(position));
+    boost::signals2::signal<void(int)> signal;
+    signal.connect(boost::bind(&TrackBall::setSaturationUpperValue, boost::ref(*tb), _1));
+    signal(position);
+}
+
+void Widget::on_valueLowerSlider_sliderMoved(int position)
+{
+    ui->valueLowerLabel->setText(QString::number(position));
+    boost::signals2::signal<void(int)> signal;
+    signal.connect(boost::bind(&TrackBall::setValueLowerValue, boost::ref(*tb), _1));
+    signal(position);
+}
+
+void Widget::on_valueUpperSlider_sliderMoved(int position)
+{
+    ui->valueLowerLabel->setText(QString::number(position));
+    boost::signals2::signal<void(int)> signal;
+    signal.connect(boost::bind(&TrackBall::setValueUpperValue, boost::ref(*tb), _1));
+    signal(position);
+}
+
+void Widget::on_tabWidget_selected(const QString &arg1)
+{
+    if (arg1.compare("Ball Tracking") == 0)
+    {
+        ui->hueLowerLabel->setText(QString::number(ui->hueLowerSlider->value()));
+        ui->hueUpperLabel->setText(QString::number(ui->hueUpperSlider->value()));
+        ui->saturationLowerLabel->setText(QString::number(ui->saturationLowerSlider->value()));
+        ui->saturationUpperLabel->setText(QString::number(ui->saturationUpperSlider->value()));
+        ui->valueLowerLabel->setText(QString::number(ui->valueLowerSlider->value()));
+        ui->valueUpperLabel->setText(QString::number(ui->valueUpperSlider->value()));
+    }
 }

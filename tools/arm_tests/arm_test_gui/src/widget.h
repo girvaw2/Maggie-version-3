@@ -9,6 +9,7 @@
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include <boost/signals2.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace Ui {
     class Widget;
@@ -39,6 +40,16 @@ private Q_SLOTS:
     void on_hueLowerSlider_sliderMoved(int position);
 
     void on_hueUpperSlider_sliderMoved(int position);
+
+    void on_saturationLowerSlider_sliderMoved(int position);
+
+    void on_saturationUpperSlider_sliderMoved(int position);
+
+    void on_valueLowerSlider_sliderMoved(int position);
+
+    void on_valueUpperSlider_sliderMoved(int position);
+
+    void on_tabWidget_selected(const QString &arg1);
 
 private:
     Ui::Widget *ui;

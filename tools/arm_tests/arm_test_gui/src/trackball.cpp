@@ -41,7 +41,7 @@ TrackBall::image_cb (const sensor_msgs::Image& rgbImage)
         Mat frame_h = v.at(0);
         Mat frame_thresh;
 
-        inRange(frame_h, cv::Scalar(hueLower,160,160), cv::Scalar(hueUpper,256,256), frame_thresh);
+        inRange(frame_h, cv::Scalar(hueLower,saturationLower,valueLower), cv::Scalar(hueUpper,saturationUpper, valueUpper), frame_thresh);
 
         GaussianBlur(frame_thresh, frame_thresh, Size(3, 3), 0, 0);
 
