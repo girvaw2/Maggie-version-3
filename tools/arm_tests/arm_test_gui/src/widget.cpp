@@ -5,7 +5,6 @@
 #include "arm_test_gui/ikhelper.h"
 #include "arm_test_gui/trackface.h"
 
-
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
@@ -69,21 +68,21 @@ void Widget::on_stopFaceTrackingPushButton_clicked()
 
 void Widget::on_startBallTrackingPushButton_clicked()
 {
-    tb = new TrackBall( ui->hueLowerSlider->value(),
+    track_ball_ptr.reset(new TrackBall( ui->hueLowerSlider->value(),
                         ui->hueUpperSlider->value(),
                         ui->saturationLowerSlider->value(),
                         ui->saturationUpperSlider->value(),
                         ui->valueLowerSlider->value(),
-                        ui->valueUpperSlider->value());
+                        ui->valueUpperSlider->value()));
 
-    tb_thread = new boost::thread (boost::bind(&TrackBall::loop, boost::ref(*tb)));
+    tb_thread = new boost::thread (boost::bind(&TrackBall::loop, boost::ref(track_ball_ptr)));
 }
 
 void Widget::on_hueLowerSlider_sliderMoved(int position)
 {
     ui->hueLowerLabel->setText(QString::number(position));
     boost::signals2::signal<void(int)> signal;
-    signal.connect(boost::bind(&TrackBall::setHueLowerValue, boost::ref(*tb), _1));
+    signal.connect(boost::bind(&TrackBall::setHueLowerValue, boost::ref(track_ball_ptr), _1));
     signal(position);
 }
 
@@ -91,7 +90,7 @@ void Widget::on_hueUpperSlider_sliderMoved(int position)
 {
     ui->hueUpperLabel->setText(QString::number(position));
     boost::signals2::signal<void(int)> signal;
-    signal.connect(boost::bind(&TrackBall::setHueUpperValue, boost::ref(*tb), _1));
+    signal.connect(boost::bind(&TrackBall::setHueUpperValue, boost::ref(track_ball_ptr), _1));
     signal(position);
 }
 
@@ -99,15 +98,15 @@ void Widget::on_saturationLowerSlider_sliderMoved(int position)
 {
     ui->saturationLowerLabel->setText(QString::number(position));
     boost::signals2::signal<void(int)> signal;
-    signal.connect(boost::bind(&TrackBall::setSaturationLowerValue, boost::ref(*tb), _1));
+    signal.connect(boost::bind(&TrackBall::setSaturationLowerValue, boost::ref(track_ball_ptr), _1));
     signal(position);
 }
 
 void Widget::on_saturationUpperSlider_sliderMoved(int position)
 {
-    ui->saturationLowerLabel->setText(QString::number(position));
+    ui->saturationUpperLabel->setText(QString::number(position));
     boost::signals2::signal<void(int)> signal;
-    signal.connect(boost::bind(&TrackBall::setSaturationUpperValue, boost::ref(*tb), _1));
+    signal.connect(boost::bind(&TrackBall::setSaturationUpperValue, boost::ref(track_ball_ptr), _1));
     signal(position);
 }
 
@@ -115,15 +114,15 @@ void Widget::on_valueLowerSlider_sliderMoved(int position)
 {
     ui->valueLowerLabel->setText(QString::number(position));
     boost::signals2::signal<void(int)> signal;
-    signal.connect(boost::bind(&TrackBall::setValueLowerValue, boost::ref(*tb), _1));
+    signal.connect(boost::bind(&TrackBall::setValueLowerValue, boost::ref(track_ball_ptr), _1));
     signal(position);
 }
 
 void Widget::on_valueUpperSlider_sliderMoved(int position)
 {
-    ui->valueLowerLabel->setText(QString::number(position));
+    ui->valueUpperLabel->setText(QString::number(position));
     boost::signals2::signal<void(int)> signal;
-    signal.connect(boost::bind(&TrackBall::setValueUpperValue, boost::ref(*tb), _1));
+    signal.connect(boost::bind(&TrackBall::setValueUpperValue, boost::ref(track_ball_ptr), _1));
     signal(position);
 }
 

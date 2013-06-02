@@ -20,7 +20,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="initialiseTab">
       <attribute name="title">
@@ -225,7 +225,7 @@
            <number>60</number>
           </property>
           <property name="value">
-           <number>30</number>
+           <number>21</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -238,7 +238,7 @@
            <number>60</number>
           </property>
           <property name="value">
-           <number>40</number>
+           <number>35</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -263,7 +263,7 @@
            <number>255</number>
           </property>
           <property name="value">
-           <number>160</number>
+           <number>60</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -301,7 +301,7 @@
            <number>255</number>
           </property>
           <property name="value">
-           <number>160</number>
+           <number>60</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>

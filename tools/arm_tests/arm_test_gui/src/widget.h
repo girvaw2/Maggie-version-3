@@ -9,7 +9,6 @@
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include <boost/signals2.hpp>
-#include <boost/lexical_cast.hpp>
 
 namespace Ui {
     class Widget;
@@ -55,7 +54,7 @@ private:
     Ui::Widget *ui;
     boost::shared_ptr<boost::thread> face_track_ptr;
     boost::thread *tb_thread;
-    TrackBall *tb;
+    boost::shared_ptr<TrackBall> track_ball_ptr;
 };
 
 #endif // WIDGET_H
