@@ -2,8 +2,11 @@
 #define TRACKBALL_H
 
 #include "ros/ros.h"
+#include "geometry_msgs/PointStamped.h"
 #include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <opencv2/nonfree/features2d.hpp>
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/calib3d/calib3d.hpp"
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/image_encodings.h>
 #include <cv_bridge/cv_bridge.h>
@@ -11,6 +14,9 @@
 #include <boost/format.hpp>
 
 using namespace cv;
+
+#define FOV_WIDTH 	1.094
+#define FOV_HEIGHT 	1.094
 
 class TrackBall
 {
@@ -29,7 +35,10 @@ public:
 private:
     void image_cb (const sensor_msgs::Image& rgbImage);
     void depth_cb (const sensor_msgs::Image& depthImage);
-    void drawCircles(cv_bridge::CvImage &cv_ptr);
+    void sobelImage(cv_bridge::CvImage &cv_ptr);
+    void detectSurfFeatures(cv_bridge::CvImage &cv_ptr);
+    void drawCirclesHSV(cv_bridge::CvImage &cv_ptr);
+    void drawCircles(cv_bridge::CvImage &cv_ptr, Mat frame_gray);
     void getHoughCircle(Mat &frame_gray, vector<Vec3f> &circles);
     void trackObject(cv_bridge::CvImage &cv_ptr);
     ros::NodeHandle *getNodeHandle();
@@ -42,12 +51,15 @@ private:
     int saturationUpper_;
     int valueLower_;
     int valueUpper_;
-    Point center_;
+    Point ball_centre_;
+    Mat ballImage_;
 
     ros::Subscriber image_sub_;
     ros::Subscriber depth_sub_;
     ros::Publisher image_pub_;
     ros::Publisher image_hsv_range_pub_;
+    ros::Publisher hough_circle_pub_;
+    ros::Publisher ball_centre_pub_;
 
     boost::asio::io_service service;
 };
