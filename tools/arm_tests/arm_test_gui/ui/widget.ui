@@ -440,6 +440,19 @@
         <string>TextLabel</string>
        </property>
       </widget>
+      <widget class="QCheckBox" name="headBallTrackerCheckBox">
+       <property name="geometry">
+        <rect>
+         <x>50</x>
+         <y>90</y>
+         <width>151</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Head Ball Tracker</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="headTrackingTab">
       <attribute name="title">

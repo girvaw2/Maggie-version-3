@@ -50,6 +50,10 @@ private Q_SLOTS:
 
     void on_tabWidget_selected(const QString &arg1);
 
+    void on_headTrackingPushButton_clicked();
+
+    void on_headBallTrackerCheckBox_toggled(bool checked);
+
 private:
     Ui::Widget *ui;
     boost::shared_ptr<boost::thread> face_track_ptr;

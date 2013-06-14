@@ -138,3 +138,14 @@ void Widget::on_tabWidget_selected(const QString &arg1)
         ui->valueUpperLabel->setText(QString::number(ui->valueUpperSlider->value()));
     }
 }
+
+void Widget::on_headTrackingPushButton_clicked()
+{
+}
+
+void Widget::on_headBallTrackerCheckBox_toggled(bool checked)
+{
+    boost::signals2::signal<void(bool)> signal;
+    signal.connect(boost::bind(&TrackBall::headBallTrack, boost::ref(track_ball_ptr), _1));
+    signal(checked);
+}

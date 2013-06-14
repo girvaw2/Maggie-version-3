@@ -12,6 +12,7 @@
 #include <cv_bridge/cv_bridge.h>
 #include <boost/asio/io_service.hpp>
 #include <boost/format.hpp>
+#include "dynamixel_controllers/SetSpeed.h"
 
 using namespace cv;
 
@@ -30,6 +31,7 @@ public:
     void setSaturationUpperValue(int value);
     void setValueLowerValue(int value);
     void setValueUpperValue(int value);
+    void headBallTrack(bool track);
     void loop();
 
 private:
@@ -41,6 +43,11 @@ private:
     void drawCircles(cv_bridge::CvImage &cv_ptr, Mat frame_gray);
     void getHoughCircle(Mat &frame_gray, vector<Vec3f> &circles);
     void trackObject(cv_bridge::CvImage &cv_ptr);
+
+    void adjustSpeedForDisplacement(float x, float y);
+    void SetPanSpeed (float speed);
+    void SetTiltSpeed (float speed);
+
     ros::NodeHandle *getNodeHandle();
 
 private:
@@ -51,6 +58,7 @@ private:
     int saturationUpper_;
     int valueLower_;
     int valueUpper_;
+    bool headBallTrack_;
     Point ball_centre_;
     Mat ballImage_;
 
@@ -60,6 +68,10 @@ private:
     ros::Publisher image_hsv_range_pub_;
     ros::Publisher hough_circle_pub_;
     ros::Publisher ball_centre_pub_;
+    ros::Publisher head_target_pub_;
+    ros::ServiceClient pan_speed_client_;
+    ros::ServiceClient tilt_speed_client_;
+    dynamixel_controllers::SetSpeed speed_srv_;
 
     boost::asio::io_service service;
 };

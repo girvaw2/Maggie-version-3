@@ -12,6 +12,8 @@
   <depend package="roscpp"/>
   <depend package="actionlib"/>
   <depend package="dynamixel_hardware_interface"/>
+  <depend package="dynamixel_controllers"/>
+  <depend package="dynamixel_msgs"/>
   <depend package="joint_trajectory_action"/>
   <depend package="geometry_msgs"/>
   <depend package="kinematics_msgs"/>

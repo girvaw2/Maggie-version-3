@@ -6,7 +6,8 @@ TrackBall::TrackBall(int hueLower, int hueUpper, int saturationLower, int satura
     saturationLower_(saturationLower),
     saturationUpper_(saturationUpper),
     valueLower_(valueLower),
-    valueUpper_(valueUpper)
+    valueUpper_(valueUpper),
+    headBallTrack_(false)
 {
     nodeHandle = (ros::NodeHandle *)0;
 }
@@ -17,6 +18,7 @@ void TrackBall::setSaturationLowerValue(int value) { saturationLower_ = value; }
 void TrackBall::setSaturationUpperValue(int value) { saturationUpper_ = value; }
 void TrackBall::setValueLowerValue(int value) { valueLower_ = value; }
 void TrackBall::setValueUpperValue(int value) { valueUpper_ = value; }
+void TrackBall::headBallTrack(bool track) { headBallTrack_ = track; }
 
 void
 TrackBall::image_cb (const sensor_msgs::Image& rgbImage)
@@ -59,7 +61,7 @@ TrackBall::depth_cb (const sensor_msgs::Image& depthImage)
     float z = cv_ptr->image.at<float>(ball_centre_);
     if (std::isnan<float>(z) == false)
     {
-           std::cout << boost::format("depth_cb %1%") %  z << std::endl;
+           //std::cout << boost::format("depth_cb %1%") %  z << std::endl;
 
            float x = z * FOV_WIDTH * (ball_centre_.x - 320) / 640;
            float y = (z * FOV_HEIGHT * (ball_centre_.y - 240) / 480);
@@ -68,9 +70,45 @@ TrackBall::depth_cb (const sensor_msgs::Image& depthImage)
            point_out.header.frame_id = "head_link";
            point_out.point.x = z;
            point_out.point.y = -x;
-           point_out.point.z = -y;
+           point_out.point.z = -y - 0.12;
            ball_centre_pub_.publish(point_out);
+
+           if (headBallTrack_)
+           {
+               //ROS_INFO("Delta X = %f", x);
+               std::cout << "Delta X = " << x << std::endl;
+
+               adjustSpeedForDisplacement (x, y);
+               head_target_pub_.publish(point_out);
+           }
     }
+}
+
+void
+TrackBall::adjustSpeedForDisplacement(float x, float y)
+{
+  SetPanSpeed(0.1); //min<float>(max<float>(abs(x) *1.5, 0.01), 0.75));
+  SetTiltSpeed(0.1); //min<float>(max<float>(abs(y) / 1.5, 0.01), 0.3));
+}
+
+void
+TrackBall::SetPanSpeed (float speed)
+{
+  speed_srv_.request.speed = speed;
+  if (!pan_speed_client_.call(speed_srv_))
+  {
+    std::cout << "Failed to set pan speed: " << speed << std::endl;
+  }
+}
+
+void
+TrackBall::SetTiltSpeed (float speed)
+{
+  speed_srv_.request.speed = speed;
+  if (!tilt_speed_client_.call(speed_srv_))
+  {
+    std::cout << "Failed to set tilt speed: " << speed << std::endl;
+  }
 }
 
 void
@@ -279,6 +317,11 @@ void TrackBall::loop()
     hough_circle_pub_ = getNodeHandle()->advertise<sensor_msgs::Image> ("hough_circle_image", 30);
 
     ball_centre_pub_ = getNodeHandle()->advertise<geometry_msgs::PointStamped> ("ball_centre", 30);
+
+    head_target_pub_ = getNodeHandle()->advertise<geometry_msgs::PointStamped> ("target_point", 1);
+
+    pan_speed_client_ = getNodeHandle()->serviceClient<dynamixel_controllers::SetSpeed>("/dynamixel_controller/head_pan_controller/set_speed");
+    tilt_speed_client_ = getNodeHandle()->serviceClient<dynamixel_controllers::SetSpeed>("/dynamixel_controller/head_tilt_controller/set_speed");
 
     std::string r_it = getNodeHandle()->resolveName (image_topic);
     ROS_INFO_STREAM("Listening for incoming data on topic " << r_it );
