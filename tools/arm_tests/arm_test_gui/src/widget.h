@@ -54,6 +54,8 @@ private Q_SLOTS:
 
     void on_headBallTrackerCheckBox_toggled(bool checked);
 
+    void on_armBallTrackingPushButton_clicked();
+
 private:
     Ui::Widget *ui;
     boost::shared_ptr<boost::thread> face_track_ptr;

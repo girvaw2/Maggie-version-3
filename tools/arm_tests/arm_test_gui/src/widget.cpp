@@ -149,3 +149,10 @@ void Widget::on_headBallTrackerCheckBox_toggled(bool checked)
     signal.connect(boost::bind(&TrackBall::headBallTrack, boost::ref(track_ball_ptr), _1));
     signal(checked);
 }
+
+void Widget::on_armBallTrackingPushButton_clicked()
+{
+    boost::signals2::signal<void(void)> signal;
+    signal.connect(boost::bind(&TrackBall::pointAtBall, boost::ref(track_ball_ptr)));
+    signal();
+}

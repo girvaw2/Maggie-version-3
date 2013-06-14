@@ -32,6 +32,7 @@ public:
     void setValueLowerValue(int value);
     void setValueUpperValue(int value);
     void headBallTrack(bool track);
+    void pointAtBall();
     void loop();
 
 private:
@@ -61,6 +62,7 @@ private:
     bool headBallTrack_;
     Point ball_centre_;
     Mat ballImage_;
+    geometry_msgs::PointStamped ball_point_;
 
     ros::Subscriber image_sub_;
     ros::Subscriber depth_sub_;

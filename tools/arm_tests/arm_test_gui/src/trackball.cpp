@@ -1,4 +1,6 @@
 #include "arm_test_gui/trackball.h"
+#include "arm_test_gui/ikhelper.h"
+#include <tf/transform_listener.h>
 
 TrackBall::TrackBall(int hueLower, int hueUpper, int saturationLower, int saturationUpper, int valueLower, int valueUpper) :
     hueLower_(hueLower),
@@ -27,15 +29,7 @@ TrackBall::image_cb (const sensor_msgs::Image& rgbImage)
     try
     {
         cv_ptr = cv_bridge::toCvCopy(rgbImage, sensor_msgs::image_encodings::BGR8);
-
-        //detectSurfFeatures(*cv_ptr);
-
-        //drawCircles(*cv_ptr);
-
-//        std::cout << "image width = " << cv_ptr->image.size().width << "image height = " << cv_ptr->image.size().height << std::endl;
-
         sobelImage(*cv_ptr);
-
     }
     catch (cv_bridge::Exception& e)
     {
@@ -61,26 +55,66 @@ TrackBall::depth_cb (const sensor_msgs::Image& depthImage)
     float z = cv_ptr->image.at<float>(ball_centre_);
     if (std::isnan<float>(z) == false)
     {
-           //std::cout << boost::format("depth_cb %1%") %  z << std::endl;
-
            float x = z * FOV_WIDTH * (ball_centre_.x - 320) / 640;
            float y = (z * FOV_HEIGHT * (ball_centre_.y - 240) / 480);
 
-           geometry_msgs::PointStamped point_out;
-           point_out.header.frame_id = "head_link";
-           point_out.point.x = z;
-           point_out.point.y = -x;
-           point_out.point.z = -y - 0.12;
-           ball_centre_pub_.publish(point_out);
+           ball_point_.header.frame_id = "head_link";
+           ball_point_.point.x = z;
+           ball_point_.point.y = -x;
+           ball_point_.point.z = -y - 0.12;
 
            if (headBallTrack_)
            {
-               //ROS_INFO("Delta X = %f", x);
-               std::cout << "Delta X = " << x << std::endl;
-
                adjustSpeedForDisplacement (x, y);
-               head_target_pub_.publish(point_out);
+               head_target_pub_.publish(ball_point_);
            }
+    }
+}
+
+void
+TrackBall::pointAtBall()
+{
+    tf::TransformListener listener;
+    try
+    {
+        if (!listener.waitForTransform("/torso_link", ball_point_.header.frame_id, ball_point_.header.stamp, ros::Duration(10.0)))
+        {
+            std::cout << "no transform to torso_link" << std::endl;
+            return; //boost::shared_ptr<geometry_msgs::PointStamped>(&ps);
+        }
+
+        char src_msg[256];
+        sprintf (src_msg, "Found transform from %s to torso_link. x = %f y = %f z = %f", ball_point_.header.frame_id.c_str(), ball_point_.point.x, ball_point_.point.y, ball_point_.point.z);
+        std::cout << src_msg << std::endl;
+
+        geometry_msgs::PointStamped point_out;
+
+        listener.transformPoint("/torso_link", ros::Time(0), ball_point_, ball_point_.header.frame_id, point_out);
+
+        point_out.point.z += 0.12;
+
+        ball_centre_pub_.publish(point_out);
+
+        IKHelper ik;
+
+        double start_orientation[] = {0.655082, -0.393060, 0.095405, 0.638176};
+
+        geometry_msgs::Pose pose;
+
+        pose.position.x = point_out.point.x - 0.1;
+        pose.position.y = point_out.point.y;
+        pose.position.z = point_out.point.z;
+
+        pose.orientation.x = start_orientation[0];
+        pose.orientation.y = start_orientation[1];
+        pose.orientation.z = start_orientation[2];
+        pose.orientation.w = start_orientation[3];
+
+        ik.moveToGoal(pose);
+    }
+    catch (tf::TransformException ex)
+    {
+        ROS_ERROR("%s",ex.what());
     }
 }
 
@@ -232,13 +266,11 @@ void TrackBall::detectSurfFeatures(cv_bridge::CvImage &cv_ptr)
     line( img_matches, scene_corners[2] + Point2f( ballImage_.cols, 0), scene_corners[3] + Point2f( ballImage_.cols, 0), Scalar( 0, 255, 0), 4 );
     line( img_matches, scene_corners[3] + Point2f( ballImage_.cols, 0), scene_corners[0] + Point2f( ballImage_.cols, 0), Scalar( 0, 255, 0), 4 );
 
-            cv_bridge::CvImage cv_ptr2;
-            cv_ptr2.header = cv_ptr.header;
-            cv_ptr2.encoding = sensor_msgs::image_encodings::BGR8;
-            cv_ptr2.image = img_matches;
-            image_pub_.publish(cv_ptr2.toImageMsg());
-
-
+    cv_bridge::CvImage cv_ptr2;
+    cv_ptr2.header = cv_ptr.header;
+    cv_ptr2.encoding = sensor_msgs::image_encodings::BGR8;
+    cv_ptr2.image = img_matches;
+    image_pub_.publish(cv_ptr2.toImageMsg());
 }
 
 void TrackBall::drawCirclesHSV(cv_bridge::CvImage &cv_ptr)
