@@ -41,10 +41,10 @@ void Widget::on_moveToIKPushButton_clicked()
     pose.position.y = ui->yDoubleSpinBox->value();
     pose.position.z = ui->zDoubleSpinBox->value();
 
-    pose.orientation.x = start_orientation[0];
-    pose.orientation.y = start_orientation[1];
-    pose.orientation.z = start_orientation[2];
-    pose.orientation.w = start_orientation[3];
+    pose.orientation.x = ui->xOrientationDoubleSpinBox->value(); //start_orientation[0];
+    pose.orientation.y = ui->yOrientationDoubleSpinBox->value(); //start_orientation[1];
+    pose.orientation.z = ui->zOrientationDoubleSpinBox->value(); //start_orientation[2];
+    pose.orientation.w = ui->wOrientationDoubleSpinBox->value(); //start_orientation[3];
 
     ik.moveToGoal(pose);
 }

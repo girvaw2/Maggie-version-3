@@ -53,7 +53,7 @@ TrackBall::depth_cb (const sensor_msgs::Image& depthImage)
     }
 
     float z = cv_ptr->image.at<float>(ball_centre_);
-    if (std::isnan<float>(z) == false)
+    if (std::isnan<float>(z) == false && z < 1.0)
     {
            float x = z * FOV_WIDTH * (ball_centre_.x - 320) / 640;
            float y = (z * FOV_HEIGHT * (ball_centre_.y - 240) / 480);
