@@ -22,10 +22,29 @@ IKHelper::IKHelper()
     //create a client function for the IK service
     ik_client = getNodeHandle()->serviceClient<kinematics_msgs::GetPositionIK>(ARM_IK_NAME, true);
 
+
+    fk_query_client = getNodeHandle()->serviceClient<kinematics_msgs::GetKinematicSolverInfo>(ARM_FK_SOLVER_NAME);
+    fk_client = getNodeHandle()->serviceClient<kinematics_msgs::GetPositionFK>(ARM_FK_NAME);
+
     //wait for the various services to be ready
     ROS_INFO("Waiting for services to be ready");
     ros::service::waitForService(ARM_IK_NAME);
+    ros::service::waitForService(ARM_FK_SOLVER_NAME);
+    ros::service::waitForService(ARM_FK_NAME);
     ROS_INFO("Services ready");
+
+
+    if(fk_query_client.call(fk_solver_request_,fk_solver_response_))
+    {
+      for(unsigned int i=0; i< fk_solver_response_.kinematic_solver_info.joint_names.size(); i++)
+      {
+        ROS_INFO("Joint: %d %s", i, fk_solver_response_.kinematic_solver_info.joint_names[i].c_str());
+      }
+    }
+    else
+    {
+        std::cout << "Could not call FK query service" << std::endl;
+    }
 
     //tell the joint trajectory action client that we want
     //to spin a thread by default
@@ -45,6 +64,15 @@ IKHelper::~IKHelper()
 
 void IKHelper::moveToGoal(geometry_msgs::Pose &pose)
 {
+    //findIncrementalTrajectory(pose);
+    geometry_msgs::Pose pose2;
+    getCurrentPose(pose2);
+
+    if (isReachable(pose))
+    {
+        std::cout << "Can REACH THIS !!!!!" << std::endl;
+    }
+
     arm_test_gui::ExecuteCartesianIKTrajectory::Request req;
     arm_test_gui::ExecuteCartesianIKTrajectory::Response res;
 
@@ -266,6 +294,116 @@ void IKHelper::getCurrentJointAngles(double current_angles[7])
     current_angles[5] = state_msg->actual.positions[6];
     current_angles[6] = state_msg->actual.positions[5];
 }
+
+/*
+ * If we haven't been able find a direct solution to the target pose,
+ * subdivide the path to the target into discrete steps.
+ * Then ensure that each step is reachable and finally we can reach the target.
+ * If we cannot find a path to the target, assume that the target is not reachable.
+ */
+bool IKHelper::findIncrementalTrajectory(geometry_msgs::Pose &pose)
+{
+    return false;
+}
+
+bool IKHelper::getCurrentPose(geometry_msgs::Pose &pose)
+{
+    kinematics_msgs::GetPositionFK::Request  fk_request;
+    kinematics_msgs::GetPositionFK::Response fk_response;
+
+    bool success = false;
+
+    fk_request.header.frame_id = "torso_link";
+    fk_request.fk_link_names.resize(1);
+    fk_request.fk_link_names[0] = "wrist_roll_link";
+//    fk_request.fk_link_names[1] = "wrist_tilt_link";
+//    fk_request.fk_link_names[2] = "elbow_tilt_link";
+//    fk_request.fk_link_names[3] = "shoulder_pan_link";
+
+    fk_request.robot_state.joint_state.position.resize(fk_solver_response_.kinematic_solver_info.joint_names.size());
+    fk_request.robot_state.joint_state.name = fk_solver_response_.kinematic_solver_info.joint_names;
+
+    double last_angles[7];
+    getCurrentJointAngles(last_angles);
+
+    for(unsigned int i=0; i< fk_solver_response_.kinematic_solver_info.joint_names.size(); i++)
+    {
+        fk_request.robot_state.joint_state.position[i] = last_angles[i];
+        std::cout << "::: " << fk_solver_response_.kinematic_solver_info.joint_names.at(i) << std::endl;
+    }
+
+    if(fk_client.call(fk_request, fk_response))
+    {
+      if(fk_response.error_code.val == fk_response.error_code.SUCCESS)
+      {
+        for(unsigned int i=0; i < fk_response.pose_stamped.size(); i ++)
+        {
+          ROS_INFO_STREAM("Link    : " << fk_response.fk_link_names[i].c_str());
+          ROS_INFO_STREAM("Position: " <<
+            fk_response.pose_stamped[i].pose.position.x << "," <<
+            fk_response.pose_stamped[i].pose.position.y << "," <<
+            fk_response.pose_stamped[i].pose.position.z);
+          ROS_INFO("Orientation: %f %f %f %f",
+            fk_response.pose_stamped[i].pose.orientation.x,
+            fk_response.pose_stamped[i].pose.orientation.y,
+            fk_response.pose_stamped[i].pose.orientation.z,
+            fk_response.pose_stamped[i].pose.orientation.w);
+
+          pose.position.x = fk_response.pose_stamped[i].pose.position.x;
+          pose.position.y = fk_response.pose_stamped[i].pose.position.y;
+          pose.position.z = fk_response.pose_stamped[i].pose.position.z;
+
+          pose.orientation.x = fk_response.pose_stamped[i].pose.orientation.x;
+          pose.orientation.y = fk_response.pose_stamped[i].pose.orientation.y;
+          pose.orientation.z = fk_response.pose_stamped[i].pose.orientation.z;
+          pose.orientation.w = fk_response.pose_stamped[i].pose.orientation.w;
+
+          success = true;
+        }
+      }
+      else
+      {
+        ROS_ERROR("Forward kinematics failed");
+      }
+    }
+    else
+    {
+      ROS_ERROR("Forward kinematics service call failed");
+    }
+    return success;
+}
+
+// Check if the target is pose is reachable.
+bool IKHelper::isReachable(geometry_msgs::Pose &pose)
+{
+    arm_test_gui::ExecuteCartesianIKTrajectory::Request req;
+    req.header.frame_id = "torso_link";
+    req.poses.push_back(pose);
+
+    geometry_msgs::PoseStamped stamped_pose;
+    stamped_pose.header = req.header;
+    stamped_pose.header.stamp = ros::Time::now();
+    bool success;
+
+    double last_angles[7];
+    getCurrentJointAngles(last_angles);
+
+    for(int i=0; i<1 /*trajectory_length*/; i++)
+    {
+        stamped_pose.pose = req.poses[i];
+
+        trajectory_array_ptr trajectory_array(new double[7]);
+
+        success = getIKSolution(stamped_pose, last_angles, trajectory_array, "wrist_roll_link");
+
+        if (success)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 ros::NodeHandle *IKHelper::getNodeHandle()
 {

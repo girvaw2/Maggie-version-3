@@ -33,7 +33,7 @@ void Widget::on_moveToIKPushButton_clicked()
 {
     IKHelper ik;
 
-    double start_orientation[] = {0.655082, -0.393060, 0.095405, 0.638176};
+    //double start_orientation[] = {0.655082, -0.393060, 0.095405, 0.638176};
 
     geometry_msgs::Pose pose;
 

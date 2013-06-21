@@ -85,10 +85,8 @@
          <string>Move to IK Position</string>
         </property>
        </widget>
-       <zorder>moveToIKPushButton</zorder>
-       <zorder>groupBox_4</zorder>
       </widget>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
          <x>260</x>
@@ -103,7 +101,7 @@
           <property name="title">
            <string>Orientation</string>
           </property>
-          <widget class="QWidget" name="">
+          <widget class="QWidget" name="layoutWidget">
            <property name="geometry">
             <rect>
              <x>30</x>
@@ -263,10 +261,10 @@
                <number>3</number>
               </property>
               <property name="minimum">
-               <double>-0.500000000000000</double>
+               <double>-0.750000000000000</double>
               </property>
               <property name="maximum">
-               <double>0.500000000000000</double>
+               <double>0.750000000000000</double>
               </property>
               <property name="singleStep">
                <double>0.001000000000000</double>
@@ -282,10 +280,10 @@
                <number>3</number>
               </property>
               <property name="minimum">
-               <double>-0.500000000000000</double>
+               <double>-0.750000000000000</double>
               </property>
               <property name="maximum">
-               <double>0.500000000000000</double>
+               <double>0.750000000000000</double>
               </property>
               <property name="singleStep">
                <double>0.001000000000000</double>
@@ -301,10 +299,10 @@
                <number>3</number>
               </property>
               <property name="minimum">
-               <double>-0.500000000000000</double>
+               <double>-0.750000000000000</double>
               </property>
               <property name="maximum">
-               <double>0.500000000000000</double>
+               <double>0.750000000000000</double>
               </property>
               <property name="singleStep">
                <double>0.001000000000000</double>
@@ -320,10 +318,8 @@
         </item>
        </layout>
       </widget>
+      <zorder>layoutWidget</zorder>
       <zorder>groupBox_2</zorder>
-      <zorder>groupBox_3</zorder>
-      <zorder>groupBox_4</zorder>
-      <zorder>groupBox_3</zorder>
      </widget>
      <widget class="QWidget" name="forwardKinematicsTab">
       <attribute name="title">

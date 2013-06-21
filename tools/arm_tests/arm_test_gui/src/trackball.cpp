@@ -243,7 +243,7 @@ void TrackBall::detectSurfFeatures(cv_bridge::CvImage &cv_ptr)
     std::vector<Point2f> obj;
     std::vector<Point2f> scene;
 
-    for( int i = 0; i < good_matches.size(); i++ )
+    for( int i = 0; i < static_cast<int>(good_matches.size()); i++ )
     {
       //-- Get the keypoints from the good matches
       obj.push_back( keypoints_object[ good_matches[i].queryIdx ].pt );
