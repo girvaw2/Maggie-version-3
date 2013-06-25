@@ -64,15 +64,13 @@ IKHelper::~IKHelper()
 
 void IKHelper::moveToGoal(geometry_msgs::Pose &pose)
 {
-    //findIncrementalTrajectory(pose);
-    geometry_msgs::Pose pose2;
-    getCurrentPose(pose2);
-
-    if (isReachable(pose))
+    if (!isReachable(pose))
     {
-        std::cout << "Can REACH THIS !!!!!" << std::endl;
+        findIncrementalTrajectory(pose);
+        std::cout << "Can't REACH THIS !!!!!" << std::endl;
     }
 
+    // we can reach the target pose, so carry right on...
     arm_test_gui::ExecuteCartesianIKTrajectory::Request req;
     arm_test_gui::ExecuteCartesianIKTrajectory::Response res;
 
@@ -303,7 +301,58 @@ void IKHelper::getCurrentJointAngles(double current_angles[7])
  */
 bool IKHelper::findIncrementalTrajectory(geometry_msgs::Pose &pose)
 {
+    geometry_msgs::Pose currentPose;
+    if (!getCurrentPose(currentPose))
+        return false;
+
+    std::vector<float> seedRange;
+    calcSeedRange(currentPose.position.y, pose.position.y, seedRange);
+
+//    float yDiff = currentPose.position.y - pose.position.y;
+//    ROS_INFO("Y Position difference: %f", yDiff);
+
+//    int yCount = static_cast<int>(yDiff / SEED_INCREMENT);
+////    for (int y = currentPose.position.y;;yDiff < 0 ?
     return false;
+
+}
+
+void showSeedRange (float i)
+{
+    std::cout << "Seed element " << i << std::endl;
+}
+
+class SeedRangeHelper
+{
+    public:
+    SeedRangeHelper (float start_val, bool forward) : start_val_( start_val ), forward_(forward) {}
+
+        float operator() ()
+        {
+            if (forward_)
+                start_val_ += 0.1;
+            else
+                start_val_ -= 0.1;
+
+            return start_val_;
+        }
+
+        private:
+            float start_val_;
+            bool forward_;
+};
+
+void IKHelper::calcSeedRange(float start, float end, std::vector<float> &range)
+{
+    int steps = static_cast<int>(fabs((start - end) / SEED_INCREMENT) - (SEED_INCREMENT / 2));
+
+    SeedRangeHelper seedRangeHelper(start, end > start ? true : false);
+
+    range.resize(steps);
+
+    std::generate(range.begin(), range.end(), seedRangeHelper);
+
+    for_each(range.begin(), range.end(), showSeedRange);
 }
 
 bool IKHelper::getCurrentPose(geometry_msgs::Pose &pose)
@@ -316,9 +365,6 @@ bool IKHelper::getCurrentPose(geometry_msgs::Pose &pose)
     fk_request.header.frame_id = "torso_link";
     fk_request.fk_link_names.resize(1);
     fk_request.fk_link_names[0] = "wrist_roll_link";
-//    fk_request.fk_link_names[1] = "wrist_tilt_link";
-//    fk_request.fk_link_names[2] = "elbow_tilt_link";
-//    fk_request.fk_link_names[3] = "shoulder_pan_link";
 
     fk_request.robot_state.joint_state.position.resize(fk_solver_response_.kinematic_solver_info.joint_names.size());
     fk_request.robot_state.joint_state.name = fk_solver_response_.kinematic_solver_info.joint_names;
@@ -338,16 +384,16 @@ bool IKHelper::getCurrentPose(geometry_msgs::Pose &pose)
       {
         for(unsigned int i=0; i < fk_response.pose_stamped.size(); i ++)
         {
-          ROS_INFO_STREAM("Link    : " << fk_response.fk_link_names[i].c_str());
-          ROS_INFO_STREAM("Position: " <<
-            fk_response.pose_stamped[i].pose.position.x << "," <<
-            fk_response.pose_stamped[i].pose.position.y << "," <<
-            fk_response.pose_stamped[i].pose.position.z);
-          ROS_INFO("Orientation: %f %f %f %f",
-            fk_response.pose_stamped[i].pose.orientation.x,
-            fk_response.pose_stamped[i].pose.orientation.y,
-            fk_response.pose_stamped[i].pose.orientation.z,
-            fk_response.pose_stamped[i].pose.orientation.w);
+//          ROS_INFO_STREAM("Link    : " << fk_response.fk_link_names[i].c_str());
+//          ROS_INFO_STREAM("Position: " <<
+//            fk_response.pose_stamped[i].pose.position.x << "," <<
+//            fk_response.pose_stamped[i].pose.position.y << "," <<
+//            fk_response.pose_stamped[i].pose.position.z);
+//          ROS_INFO("Orientation: %f %f %f %f",
+//            fk_response.pose_stamped[i].pose.orientation.x,
+//            fk_response.pose_stamped[i].pose.orientation.y,
+//            fk_response.pose_stamped[i].pose.orientation.z,
+//            fk_response.pose_stamped[i].pose.orientation.w);
 
           pose.position.x = fk_response.pose_stamped[i].pose.position.x;
           pose.position.y = fk_response.pose_stamped[i].pose.position.y;

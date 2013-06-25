@@ -22,6 +22,8 @@ static const std::string SET_PLANNING_SCENE_DIFF_NAME = "/environment_server/set
 static const std::string ARM_IK_NAME = "/maggie_right_arm_kinematics/get_ik";
 static const std::string ARM_FK_NAME = "/maggie_right_arm_kinematics/get_fk";
 static const std::string ARM_FK_SOLVER_NAME = "maggie_right_arm_kinematics/get_fk_solver_info";
+static const float SEED_INCREMENT = 0.1;
+
 typedef actionlib::SimpleActionClient<control_msgs::FollowJointTrajectoryAction> TrajClient;
 
 typedef ::boost::shared_array<double> trajectory_array_ptr;
@@ -40,6 +42,7 @@ private:
     bool executeJointTrajectory(std::vector< ::boost::shared_array<double> > joint_trajectory); //std::vector<trajectory_ptr> joint_trajectory);
     void initialiseGoal(control_msgs::FollowJointTrajectoryGoal &goal);
     bool findIncrementalTrajectory(geometry_msgs::Pose &pose);
+    void calcSeedRange(float start, float end, std::vector<float> &range);
     bool getCurrentPose(geometry_msgs::Pose &pose);
     bool isReachable(geometry_msgs::Pose &pose);
     ros::NodeHandle *getNodeHandle();
